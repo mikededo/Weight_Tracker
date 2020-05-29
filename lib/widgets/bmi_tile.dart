@@ -21,6 +21,8 @@ class BMITile extends StatefulWidget {
 }
 
 class _BMITileState extends State<BMITile> {
+  UserData _userData;
+
   final List<int> _ranges = [12, 20, 26];
   final List<String> _bmiResultsText = [
     "Underweight",
@@ -28,8 +30,6 @@ class _BMITileState extends State<BMITile> {
     "Overweight",
     "Obese"
   ];
-
-  UserData _userData;
 
   int _bmiResults(double bmiValue) {
     int bmi = bmiValue.toInt() - 6;
@@ -86,8 +86,8 @@ class _BMITileState extends State<BMITile> {
     return list;
   }
 
-  void _loadPreferences() =>
-      UserConfigurations.loadConfigurations().then((data) => _userData = data);
+  void _loadPreferences() async =>
+      _userData = await UserConfigurations.loadConfigurations();
 
   String _loadBMI(double bmiValue) {
     String res;
@@ -164,14 +164,16 @@ class _BMITileState extends State<BMITile> {
                               ),
                               TextSpan(text: '  '),
                               _buildBMIResults(
-                                  _calculateBmiValue(latestWeight)),
+                                _calculateBmiValue(latestWeight),
+                              ),
                             ],
                           ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children:
-                              _buildBars(_calculateBmiValue(latestWeight)),
+                          children: _buildBars(
+                            _calculateBmiValue(latestWeight),
+                          ),
                         ),
                       ],
                     );
