@@ -1,0 +1,165 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'package:weight_tracker/data/models/weight.dart';
+import 'package:weight_tracker/data/blocs/weight_bloc/weight_bloc.dart';
+import 'package:weight_tracker/screens/add_weight_screen.dart';
+import 'package:weight_tracker/util/util.dart';
+import 'package:weight_tracker/widgets/history_tile.dart';
+import 'package:weight_tracker/widgets/screen_header.dart';
+
+class HistoryScreen extends StatelessWidget {
+  static const String routeName = '/history_screen';
+
+  void _deleteAllDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          elevation: 0.0,
+          title: Text(
+            'Delete all data',
+            style: TextStyle(color: textWhiteColor),
+          ),
+          content: Text(
+            'This action is irreversible. Are you sure?',
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+          contentPadding: const EdgeInsets.only(
+            top: 8.0,
+            left: 24.0,
+            right: 24.0,
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'YES',
+                style: TextStyle(color: Theme.of(context).accentColor),
+              ),
+              onPressed: () {
+                BlocProvider.of<WeightBloc>(context).add(WeightDeletedAll());
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(
+                'NO',
+                style: TextStyle(color: Theme.of(context).accentColor),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 12.0,
+            horizontal: 20.0,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              ScreenHeader(text: 'Weight history'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'All',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.0,
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () => _deleteAllDialog(context),
+                    child: Text(
+                      'Delete All',
+                      style: TextStyle(
+                        color: Theme.of(context).accentColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: BlocBuilder<WeightBloc, WeightState>(
+                  builder: (context, state) {
+                    if (state is WeightLoadInProgress ||
+                        state is WeightInitial) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (state is WeightLoadSuccess) {
+                      /// Data already sorted
+                      List<WeightData> list = state.weightCollection;
+
+                      if (list.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'Start adding \na weight!',
+                            style: Theme.of(context).textTheme.bodyText1,
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      } else {
+                        return ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          itemBuilder: (_, index) {
+                            if (index == list.length - 1) {
+                              return HistoryTile(
+                                weightData: list[index],
+                                prevWeightData: null,
+                                extended: true,
+                              );
+                            } else {
+                              return HistoryTile(
+                                weightData: list[index],
+                                prevWeightData: list[index + 1],
+                                extended: true,
+                              );
+                            }
+                          },
+                          itemCount: list.length,
+                        );
+                      }
+                    } else {
+                      return Center(child: Text('Failed loading data'));
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () =>
+            Navigator.pushNamed(context, AddWeightScreen.routeName),
+        backgroundColor: Theme.of(context).accentColor,
+        label: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32.0),
+          child: Text(
+            'NEW WEIGHT',
+            style: GoogleFonts.workSans().copyWith(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+}
