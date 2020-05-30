@@ -1,8 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:weight_tracker/data/models/user_data.dart';
 
-class UserConfigurations {
-  static Future<UserData> loadConfigurations() async {
+class UserPreferences {
+  static Future<UserData> loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return UserData.fromPrefs(prefs);
   }

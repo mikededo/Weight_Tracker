@@ -12,7 +12,6 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => Home());
       case AddWeightScreen.routeName:
         final WeightData wd = settings.arguments as WeightData;
-        print(wd);
         return MaterialPageRoute(builder: (_) => AddWeightScreen(wd: wd));
       case ConfigurationScreen.routeName:
         return MaterialPageRoute(builder: (_) => ConfigurationScreen());

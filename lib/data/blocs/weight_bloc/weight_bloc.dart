@@ -46,7 +46,6 @@ class WeightBloc extends Bloc<WeightEvent, WeightState> {
             ),
           );
     } catch (error) {
-      print(error);
       yield WeightLoadFailure();
     }
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:weight_tracker/data/database/user_configurations.dart';
+import 'package:weight_tracker/data/database/user_preferences.dart';
 import 'package:weight_tracker/util/util.dart';
 import 'package:weight_tracker/widgets/screen_header.dart';
 import 'package:weight_tracker/widgets/tile.dart';
@@ -23,8 +22,8 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
   bool _switchTwo = false;
   bool _switchThree = false;
 
-  void _loadConfigurations() {
-    UserConfigurations.loadConfigurations().then(
+  void _loadPreferences() {
+    UserPreferences.loadPreferences().then(
       (config) {
         setState(
           () {
@@ -37,7 +36,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
 
   @override
   void didChangeDependencies() {
-    _loadConfigurations();
+    _loadPreferences();
     super.didChangeDependencies();
   }
 
@@ -173,7 +172,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          UserConfigurations.saveHeight(_height.toInt());
+          UserPreferences.saveHeight(_height.toInt());
           Navigator.of(context).pop();
         },
         backgroundColor: Theme.of(context).accentColor,

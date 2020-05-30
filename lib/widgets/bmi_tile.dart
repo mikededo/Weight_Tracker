@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weight_tracker/data/database/user_configurations.dart';
+import 'package:weight_tracker/data/database/user_preferences.dart';
 
 import 'package:weight_tracker/data/models/user_data.dart';
 import 'package:weight_tracker/data/blocs/weight_bloc/weight_bloc.dart';
@@ -86,8 +86,10 @@ class _BMITileState extends State<BMITile> {
     return list;
   }
 
-  void _loadPreferences() async =>
-      _userData = await UserConfigurations.loadConfigurations();
+  void _loadPreferences() async {
+    UserData temp = await UserPreferences.loadPreferences();
+    setState(() => _userData = temp);
+  }
 
   String _loadBMI(double bmiValue) {
     String res;
@@ -103,14 +105,19 @@ class _BMITileState extends State<BMITile> {
     return res;
   }
 
-  double _calculateBmiValue(double weight) {
-    return (weight ?? 80.0) / pow(_userData.height / 100, 2);
+  double _calculateBmiValue({double weight, double height}) {
+    return (weight ?? 80.0) / pow(height / 100, 2);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    _loadPreferences();
   }
 
   @override
   Widget build(BuildContext context) {
-    _loadPreferences();
-
     return Container(
       height: MediaQuery.of(context).size.height * 0.2,
       width: double.infinity,
@@ -154,8 +161,12 @@ class _BMITileState extends State<BMITile> {
                           text: TextSpan(
                             children: <TextSpan>[
                               TextSpan(
-                                text:
-                                    _loadBMI(_calculateBmiValue(latestWeight)),
+                                text: _loadBMI(
+                                  _calculateBmiValue(
+                                    weight: latestWeight,
+                                    height: _userData.height.toDouble(),
+                                  ),
+                                ),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -164,7 +175,10 @@ class _BMITileState extends State<BMITile> {
                               ),
                               TextSpan(text: '  '),
                               _buildBMIResults(
-                                _calculateBmiValue(latestWeight),
+                                _calculateBmiValue(
+                                  weight: latestWeight,
+                                  height: _userData.height.toDouble(),
+                                ),
                               ),
                             ],
                           ),
@@ -172,7 +186,10 @@ class _BMITileState extends State<BMITile> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: _buildBars(
-                            _calculateBmiValue(latestWeight),
+                            _calculateBmiValue(
+                              weight: latestWeight,
+                              height: _userData.height.toDouble(),
+                            ),
                           ),
                         ),
                       ],
@@ -190,38 +207,3 @@ class _BMITileState extends State<BMITile> {
     );
   }
 }
-
-/* 
-child: _bmi.length > 2
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      RichText(
-                        text: TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: _bmi,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 28.0,
-                              ),
-                            ),
-                            TextSpan(text: '  '),
-                            _buildBMIResults(),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: _buildBars(),
-                      ),
-                    ],
-                  )
-                : Center(
-                    child: CircularProgressIndicator(),
-                  ),
-
-
- */
