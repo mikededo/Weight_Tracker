@@ -138,7 +138,10 @@ class _AddUserScreenState extends State<AddUserScreen> {
       body: DefaultPageLayout(
         child: Column(
           children: <Widget>[
-            ScreenHeader(text: 'Welcome!'),
+            ScreenHeader(
+              text: 'Welcome!',
+              withCloseIcon: false,
+            ),
             SwitchListTile(
               title: Text(
                 'Metric units?',

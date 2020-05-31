@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class ScreenHeader extends StatelessWidget {
   final String text;
+  final bool withCloseIcon;
 
-  const ScreenHeader({@required this.text}) : assert(text != null);
+  const ScreenHeader({@required this.text, this.withCloseIcon = true})
+      : assert(text != null);
 
   @override
   Widget build(BuildContext context) {
@@ -22,17 +24,19 @@ class ScreenHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            this.text,
+            text,
             style: Theme.of(context).textTheme.headline1,
           ),
-          InkWell(
-            onTap: () => Navigator.of(context).pop(),
-            child: Icon(
-              Icons.close,
-              size: 24.0,
-              color: Colors.white,
-            ),
-          ),
+          withCloseIcon
+              ? InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Icon(
+                    Icons.close,
+                    size: 24.0,
+                    color: Colors.white,
+                  ),
+                )
+              : SizedBox()
         ],
       ),
     );
