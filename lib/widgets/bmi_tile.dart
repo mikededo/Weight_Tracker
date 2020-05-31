@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weight_tracker/data/database/user_preferences.dart';
 
-import 'package:weight_tracker/data/models/user_data.dart';
 import 'package:weight_tracker/data/blocs/weight_bloc/weight_bloc.dart';
 import 'package:weight_tracker/widgets/tile.dart';
 
@@ -21,7 +20,7 @@ class BMITile extends StatefulWidget {
 }
 
 class _BMITileState extends State<BMITile> {
-  UserData _userData;
+  double _height;
 
   final List<int> _ranges = [12, 20, 26];
   final List<String> _bmiResultsText = [
@@ -86,10 +85,8 @@ class _BMITileState extends State<BMITile> {
     return list;
   }
 
-  void _loadPreferences() async {
-    UserData temp = await UserPreferences.loadPreferences();
-    setState(() => _userData = temp);
-  }
+  void _loadUserHeight() async =>
+      _height = await UserPreferences.getUserHeight();
 
   String _loadBMI(double bmiValue) {
     String res;
@@ -105,19 +102,19 @@ class _BMITileState extends State<BMITile> {
     return res;
   }
 
-  double _calculateBmiValue({double weight, double height}) {
-    return (weight ?? 80.0) / pow(height / 100, 2);
+  double _calculateBmiValue(double weight) {
+    return (weight ?? 80.0) / pow(_height / 100, 2);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
-    _loadPreferences();
   }
 
   @override
   Widget build(BuildContext context) {
+    _loadUserHeight();
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.2,
       width: double.infinity,
@@ -127,12 +124,7 @@ class _BMITileState extends State<BMITile> {
         children: <Widget>[
           Text(
             'BMI Calculator',
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
-              color: Color(0xFF8b8b97),
-            ),
+            style: Theme.of(context).textTheme.subtitle1,
           ),
           Tile(
             height: MediaQuery.of(context).size.height * 0.15,
@@ -153,6 +145,7 @@ class _BMITileState extends State<BMITile> {
                     );
                   } else {
                     double latestWeight = state.weightCollection.first.weight;
+
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,23 +155,13 @@ class _BMITileState extends State<BMITile> {
                             children: <TextSpan>[
                               TextSpan(
                                 text: _loadBMI(
-                                  _calculateBmiValue(
-                                    weight: latestWeight,
-                                    height: _userData.height.toDouble(),
-                                  ),
+                                  _calculateBmiValue(latestWeight),
                                 ),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 28.0,
-                                ),
+                                style: Theme.of(context).textTheme.headline3,
                               ),
                               TextSpan(text: '  '),
                               _buildBMIResults(
-                                _calculateBmiValue(
-                                  weight: latestWeight,
-                                  height: _userData.height.toDouble(),
-                                ),
+                                _calculateBmiValue(latestWeight),
                               ),
                             ],
                           ),
@@ -186,10 +169,7 @@ class _BMITileState extends State<BMITile> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: _buildBars(
-                            _calculateBmiValue(
-                              weight: latestWeight,
-                              height: _userData.height.toDouble(),
-                            ),
+                            _calculateBmiValue(latestWeight),
                           ),
                         ),
                       ],

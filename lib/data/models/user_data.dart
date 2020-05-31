@@ -1,15 +1,20 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+@immutable
 class UserData {
-  int height;
+  final int height;
 
   static const String UD_HEIGHT = 'height';
+  static const String UD_THEME = 'theme_type';
 
-  UserData({this.height = 180});
+  UserData({@required this.height});
 
   factory UserData.fromPrefs(SharedPreferences prefs) {
     return UserData(
-      height: prefs.get(UD_HEIGHT) ?? 180,
+      height: prefs.get(UD_HEIGHT)
     );
   }
+
+  bool get isEmpty => (height == null);
 }

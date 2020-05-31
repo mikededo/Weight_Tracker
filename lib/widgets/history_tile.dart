@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -33,7 +33,7 @@ class HistoryTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Icon(
-            FontAwesomeIcons.equals,
+            MaterialCommunityIcons.equal,
             size: 18.0,
             color: textGreyColor,
           ),
@@ -51,7 +51,7 @@ class HistoryTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Icon(
-            Icons.arrow_upward,
+            MaterialCommunityIcons.arrow_up,
             size: 22.0,
             color: Colors.red,
           ),
@@ -69,7 +69,7 @@ class HistoryTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Icon(
-            Icons.arrow_downward,
+            MaterialCommunityIcons.arrow_down,
             size: 22.0,
             color: Colors.green,
           ),
@@ -147,7 +147,7 @@ class HistoryTile extends StatelessWidget {
                       highlightColor: Colors.transparent,
                       hoverColor: Colors.transparent,
                       child: Icon(
-                        FontAwesomeIcons.times,
+                        FontAwesome.times,
                         color: Colors.red,
                       ),
                       onTap: () => BlocProvider.of<WeightBloc>(context).add(

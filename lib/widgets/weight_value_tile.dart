@@ -27,12 +27,7 @@ class WeightValueTile extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            fontSize: 16.0,
-            letterSpacing: 0.5,
-          ),
+          style: Theme.of(context).textTheme.headline5,
         ),
       ),
       onTap: onTap,
@@ -98,19 +93,14 @@ class WeightValueTile extends StatelessWidget {
               Container(
                 child: Text(
                   'Weight [kg]',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.0,
-                  ),
+                  style: Theme.of(context).textTheme.headline5,
                 ),
               ),
               InkWell(
                 onTap: () => _resetWeight(context),
                 child: Text(
                   'Reset',
-                  style: Theme.of(context).textTheme.headline4,
+                  style: Theme.of(context).textTheme.headline6,
                 ),
               ),
             ],

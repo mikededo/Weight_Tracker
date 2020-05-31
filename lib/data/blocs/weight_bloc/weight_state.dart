@@ -2,15 +2,12 @@ part of 'weight_bloc.dart';
 
 abstract class WeightState extends Equatable {
   const WeightState();
+
   @override
   List<Object> get props => [];
 }
 
-class WeightInitial extends WeightState {
-  const WeightInitial();
-  @override
-  List<Object> get props => [];
-}
+class WeightInitial extends WeightState {}
 
 class WeightLoadInProgress extends WeightState {}
 

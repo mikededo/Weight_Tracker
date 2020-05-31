@@ -74,23 +74,13 @@ class HistoryScreen extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     'All',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.0,
-                    ),
+                    style: Theme.of(context).textTheme.headline5,
                   ),
                   FlatButton(
                     onPressed: () => _deleteAllDialog(context),
                     child: Text(
                       'Delete All',
-                      style: TextStyle(
-                        color: Theme.of(context).accentColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
-                        letterSpacing: 1.0,
-                      ),
+                      style: Theme.of(context).textTheme.headline6,
                     ),
                   ),
                 ],

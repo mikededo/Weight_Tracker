@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:weight_tracker/data/database/user_preferences.dart';
-import 'package:weight_tracker/util/util.dart';
-import 'package:weight_tracker/widgets/screen_header.dart';
-import 'package:weight_tracker/widgets/tile.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../data/blocs/slider_bloc/slider_bloc.dart';
+import '../data/database/user_preferences.dart';
+import '../widgets/modified_slider.dart';
+import '../widgets/screen_header.dart';
+import '../widgets/tile.dart';
 
 class ConfigurationScreen extends StatefulWidget {
   static const String routeName = '/configuration_screen';
@@ -13,8 +16,6 @@ class ConfigurationScreen extends StatefulWidget {
 
 class _ConfigurationScreenState extends State<ConfigurationScreen> {
   /// Slider values
-  final double _min = 50;
-  final double _max = 225;
   double _height = 180;
 
   /// Switch values
@@ -22,16 +23,9 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
   bool _switchTwo = false;
   bool _switchThree = false;
 
-  void _loadPreferences() {
-    UserPreferences.loadPreferences().then(
-      (config) {
-        setState(
-          () {
-            _height = config.height.truncateToDouble();
-          },
-        );
-      },
-    );
+  void _loadPreferences() async {
+    double height = await UserPreferences.getUserHeight();
+    setState(() => _height = height);
   }
 
   @override
@@ -42,149 +36,99 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20.0,
-            vertical: 12.0,
-          ),
-          child: Column(
-            children: <Widget>[
-              ScreenHeader(text: 'User Settings'),
-              Tile(
-                margin: const EdgeInsets.only(
-                  bottom: 6.0,
-                  top: 16.0,
+    return BlocProvider<SliderBloc>(
+      create: (_) => SliderBloc(_height),
+      child: Scaffold(
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 12.0,
+            ),
+            child: Column(
+              children: <Widget>[
+                ScreenHeader(text: 'User Settings'),
+                Tile(
+                  margin: const EdgeInsets.only(
+                    bottom: 6.0,
+                    top: 16.0,
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: ModifiedSlider(
+                    min: 50,
+                    max: 225,
+                    withText: true,
+                    middleText: false,
+                  ),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            'Set your height',
-                            style: TextStyle(
-                              color: textWhiteColor,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                          Text(
-                            '${_height.toStringAsFixed(0)} cm',
-                            style: TextStyle(
-                                color: textWhiteColor,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0),
-                          ),
-                        ],
-                      ),
+                Tile(
+                  margin: const EdgeInsets.symmetric(vertical: 6.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: ListTile(
+                    title: Text(
+                      'Setting number 1',
+                      style: Theme.of(context).textTheme.headline5,
                     ),
-                    Slider(
+                    trailing: Switch(
+                      value: _switchOne,
                       activeColor: Theme.of(context).accentColor,
-                      inactiveColor:
-                          Theme.of(context).accentColor.withOpacity(0.45),
-                      value: _height,
-                      min: _min,
-                      max: _max,
-                      divisions: (_max - _min).toInt(),
-                      onChanged: (double value) => setState(
-                        () => _height = value,
-                      ),
-                      onChangeEnd: (double value) => print(value),
+                      onChanged: (newValue) =>
+                          setState(() => _switchOne = newValue),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            _min.toStringAsFixed(0),
-                            style: TextStyle(color: textWhiteColor),
-                          ),
-                          Text(
-                            _max.toStringAsFixed(0),
-                            style: TextStyle(color: textWhiteColor),
-                          )
-                        ],
-                      ),
+                  ),
+                ),
+                Tile(
+                  margin: const EdgeInsets.symmetric(vertical: 6.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: ListTile(
+                    title: Text(
+                      'Setting number 2',
+                      style: Theme.of(context).textTheme.headline5,
                     ),
-                  ],
-                ),
-              ),
-              Tile(
-                margin: const EdgeInsets.symmetric(vertical: 6.0),
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: ListTile(
-                  title: Text(
-                    'Setting number 1',
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                  trailing: Switch(
-                    value: _switchOne,
-                    activeColor: Theme.of(context).accentColor,
-                    onChanged: (newValue) =>
-                        setState(() => _switchOne = newValue),
+                    trailing: Switch(
+                      value: _switchTwo,
+                      activeColor: Theme.of(context).accentColor,
+                      onChanged: (newValue) =>
+                          setState(() => _switchTwo = newValue),
+                    ),
                   ),
                 ),
-              ),
-              Tile(
-                margin: const EdgeInsets.symmetric(vertical: 6.0),
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: ListTile(
-                  title: Text(
-                    'Setting number 2',
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                  trailing: Switch(
-                    value: _switchTwo,
-                    activeColor: Theme.of(context).accentColor,
-                    onChanged: (newValue) =>
-                        setState(() => _switchTwo = newValue),
-                  ),
-                ),
-              ),
-              Tile(
-                margin: const EdgeInsets.symmetric(vertical: 6.0),
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: ListTile(
-                  title: Text(
-                    'Setting number 3',
-                    style: Theme.of(context).textTheme.headline3,
-                  ),
-                  trailing: Switch(
-                    value: _switchThree,
-                    activeColor: Theme.of(context).accentColor,
-                    onChanged: (newValue) =>
-                        setState(() => _switchThree = newValue),
+                Tile(
+                  margin: const EdgeInsets.symmetric(vertical: 6.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: ListTile(
+                    title: Text(
+                      'Setting number 3',
+                      style: Theme.of(context).textTheme.headline5,
+                    ),
+                    trailing: Switch(
+                      value: _switchThree,
+                      activeColor: Theme.of(context).accentColor,
+                      onChanged: (newValue) =>
+                          setState(() => _switchThree = newValue),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          UserPreferences.saveHeight(_height.toInt());
-          Navigator.of(context).pop();
-        },
-        backgroundColor: Theme.of(context).accentColor,
-        label: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Text(
-            'SAVE CONFIGURATION',
-            style: Theme.of(context).textTheme.button,
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            UserPreferences.saveHeight(_height.toInt());
+            Navigator.of(context).pop();
+          },
+          backgroundColor: Theme.of(context).accentColor,
+          label: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Text(
+              'SAVE CONFIGURATION',
+              style: Theme.of(context).textTheme.button,
+            ),
           ),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

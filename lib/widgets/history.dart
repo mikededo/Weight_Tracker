@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../data/models/weight.dart';
 import '../data/blocs/weight_bloc/weight_bloc.dart';
 import '../screens/history_screen.dart';
-import '../util/util.dart';
 import '../widgets/history_tile.dart';
 
 class WeightHistory extends StatelessWidget {
@@ -24,24 +23,14 @@ class WeightHistory extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         'History',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
-                          color: textGreyColor,
-                        ),
+                        style: Theme.of(context).textTheme.subtitle1,
                       ),
                       FlatButton(
                         onPressed: () => Navigator.of(context)
                             .pushNamed(HistoryScreen.routeName),
                         child: Text(
                           'See All',
-                          style: TextStyle(
-                            color: Theme.of(context).accentColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0,
-                            letterSpacing: 1.0,
-                          ),
+                          style: Theme.of(context).textTheme.headline6,
                         ),
                       ),
                     ],
@@ -54,6 +43,7 @@ class WeightHistory extends StatelessWidget {
                   height: constraints.maxHeight * 0.8,
                   child: BlocBuilder<WeightBloc, WeightState>(
                     builder: (context, state) {
+                      print(state);
                       if (state is WeightLoadInProgress ||
                           state is WeightInitial) {
                         return Center(child: CircularProgressIndicator());

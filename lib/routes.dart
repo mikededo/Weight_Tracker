@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weight_tracker/data/models/weight.dart';
+import 'package:weight_tracker/screens/add_user_screen.dart';
 import 'package:weight_tracker/screens/add_weight_screen.dart';
 import 'package:weight_tracker/screens/configuration_screen.dart';
 import 'package:weight_tracker/screens/history_screen.dart';
 import 'package:weight_tracker/screens/home.dart';
+import 'package:weight_tracker/screens/splash_screen.dart';
+
+import 'data/blocs/slider_bloc/slider_bloc.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case SplashScreen.routeName:
+        return MaterialPageRoute(builder: (_) => SplashScreen());
+      case AddUserScreen.routeName:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider<SliderBloc>(
+            create: (_) => SliderBloc(180.0),
+            child: AddUserScreen(),
+          ),
+        );
       case Home.routeName:
         return MaterialPageRoute(builder: (_) => Home());
       case AddWeightScreen.routeName:
@@ -23,12 +37,17 @@ class RouteGenerator {
   }
 
   static Route<dynamic> _errorRoute() {
-    return MaterialPageRoute(builder: (_) {
-      return Scaffold(
-        body: Center(
-          child: Text('404 Page nout found'),
-        ),
-      );
-    });
+    return MaterialPageRoute(
+      builder: (_) {
+        return Scaffold(
+          body: Center(
+            child: Text(
+              '404 Page not found',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'add_weight_screen.dart';
@@ -10,7 +10,7 @@ import '../widgets/weight_line_chart.dart';
 
 class Home extends StatelessWidget {
   static const String routeName = '/home';
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +29,7 @@ class Home extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Icon(
-                      FontAwesomeIcons.solidUserCircle,
+                      FontAwesome.user_circle,
                       size: 28.0,
                       color: Colors.white,
                     ),
