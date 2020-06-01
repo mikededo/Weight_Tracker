@@ -72,7 +72,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
               signed: false,
               decimal: true,
             ),
-          ),
+          ),          
           _buildField(
             hint: 'Goal weight',
             keyboardType: TextInputType.numberWithOptions(
@@ -145,7 +145,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
             SwitchListTile(
               title: Text(
                 'Metric units?',
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.headline5,
               ),
               value: _metricUnits,
               onChanged: (bool val) => setState(() => _metricUnits = val),
@@ -155,11 +155,12 @@ class _AddUserScreenState extends State<AddUserScreen> {
                 key: _formKey,
                 child: Stepper(
                   steps: _buildAddUserSteps(),
+                  
                   onStepContinue: _next,
                   onStepCancel: _cancel,
                   onStepTapped: _goTo,
                   currentStep: _currentStep,
-                  controlsBuilder: (context, {onStepCancel, onStepContinue}) {
+                  controlsBuilder: (_, {onStepCancel, onStepContinue}) {
                     return ButtonBar(
                       alignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[

@@ -142,10 +142,7 @@ class HistoryScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 32.0),
           child: Text(
             'NEW WEIGHT',
-            style: GoogleFonts.workSans().copyWith(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              fontWeight: FontWeight.w900,
-            ),
+            style: Theme.of(context).textTheme.button,
           ),
         ),
       ),

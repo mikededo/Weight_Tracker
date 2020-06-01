@@ -71,6 +71,7 @@ final Map<AppTheme, ThemeData> appThemeData = {
       ),
       button: GoogleFonts.workSans().copyWith(
         color: Color(0xFF191924),
+        fontWeight: FontWeight.bold,
         letterSpacing: 1.0,
       ),
     ),
