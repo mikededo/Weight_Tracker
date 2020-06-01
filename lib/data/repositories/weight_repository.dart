@@ -1,4 +1,4 @@
-import 'package:weight_tracker/data/models/weight.dart';
+import '../models/weight.dart';
 
 abstract class WeightRepository {
   Future<void> addWeight(WeightData wd);

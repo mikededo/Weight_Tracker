@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:weight_tracker/data/blocs/slider_bloc/slider_bloc.dart';
-import 'package:weight_tracker/data/blocs/weight_bloc/weight_bloc.dart';
-import 'package:weight_tracker/data/database/user_preferences.dart';
-import 'package:weight_tracker/data/models/user_data.dart';
-import 'package:weight_tracker/data/models/weight.dart';
-import 'package:weight_tracker/screens/home.dart';
-import 'package:weight_tracker/util/validators.dart';
-import 'package:weight_tracker/widgets/tile.dart';
+
+import '../data/blocs/slider_bloc/slider_bloc.dart';
+import '../data/blocs/weight_bloc/weight_bloc.dart';
+import '../data/database/user_preferences.dart';
+import '../data/models/user_data.dart';
+import '../data/models/weight.dart';
+import '../screens/home.dart';
+import '../util/validators.dart';
+import '../widgets/tile.dart';
 
 import 'modified_slider.dart';
 

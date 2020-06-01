@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:weight_tracker/data/models/user_data.dart';
-import 'package:weight_tracker/data/models/weight.dart';
-import 'package:weight_tracker/screens/add_user_screen.dart';
-import 'package:weight_tracker/screens/add_weight_screen.dart';
-import 'package:weight_tracker/screens/configuration_screen.dart';
-import 'package:weight_tracker/screens/history_screen.dart';
-import 'package:weight_tracker/screens/home.dart';
-import 'package:weight_tracker/screens/splash_screen.dart';
+
+import 'data/models/user_data.dart';
+import 'data/models/weight.dart';
+import 'screens/add_user_screen.dart';
+import 'screens/add_weight_screen.dart';
+import 'screens/configuration_screen.dart';
+import 'screens/history_screen.dart';
+import 'screens/home.dart';
+import 'screens/splash_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {

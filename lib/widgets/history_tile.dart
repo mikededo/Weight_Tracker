@@ -4,11 +4,11 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-import 'package:weight_tracker/data/models/weight.dart';
-import 'package:weight_tracker/data/blocs/weight_bloc/weight_bloc.dart';
-import 'package:weight_tracker/screens/add_weight_screen.dart';
-import 'package:weight_tracker/util/util.dart';
-import 'package:weight_tracker/widgets/tile.dart';
+import '../data/models/weight.dart';
+import '../data/blocs/weight_bloc/weight_bloc.dart';
+import '../screens/add_weight_screen.dart';
+import '../util/util.dart';
+import '../widgets/tile.dart';
 
 class HistoryTile extends StatelessWidget {
   final WeightData weightData;

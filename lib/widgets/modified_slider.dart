@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weight_tracker/data/blocs/slider_bloc/slider_bloc.dart';
-import 'package:weight_tracker/data/blocs/slider_bloc/slider_event.dart';
+
+import '../data/blocs/slider_bloc/slider_bloc.dart';
+import '../data/blocs/slider_bloc/slider_event.dart';
 
 class ModifiedSlider extends StatelessWidget {
   final double _min;

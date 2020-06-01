@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:weight_tracker/data/models/weight.dart';
-import 'package:weight_tracker/data/blocs/weight_bloc/weight_bloc.dart';
-import 'package:weight_tracker/screens/add_weight_screen.dart';
-import 'package:weight_tracker/util/util.dart';
-import 'package:weight_tracker/widgets/history_tile.dart';
-import 'package:weight_tracker/widgets/screen_header.dart';
+import '../data/models/weight.dart';
+import '../data/blocs/weight_bloc/weight_bloc.dart';
+import '../screens/add_weight_screen.dart';
+import '../util/util.dart';
+import '../widgets/history_tile.dart';
+import '../widgets/screen_header.dart';
 
 class HistoryScreen extends StatelessWidget {
   static const String routeName = '/history_screen';

@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weight_tracker/data/models/user_data.dart';
+
+import '../models/user_data.dart';
 
 class UserPreferences {
   /// Get the user saved preferences

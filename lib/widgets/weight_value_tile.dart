@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weight_tracker/data/blocs/weight_counter_bloc/weight_counter_bloc.dart';
-import 'package:weight_tracker/data/blocs/weight_counter_bloc/weight_counter_event.dart';
+
+import '../data/blocs/weight_counter_bloc/weight_counter_bloc.dart';
+import '../data/blocs/weight_counter_bloc/weight_counter_event.dart';
 
 class WeightValueTile extends StatelessWidget {
   void _incrementWeight(context) =>

@@ -2,10 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weight_tracker/data/database/user_preferences.dart';
 
-import 'package:weight_tracker/data/blocs/weight_bloc/weight_bloc.dart';
-import 'package:weight_tracker/widgets/tile.dart';
+import '../data/database/user_preferences.dart';
+import '../data/blocs/weight_bloc/weight_bloc.dart';
+import '../widgets/tile.dart';
 
 class BMITile extends StatefulWidget {
   static const List<Color> _colors = [

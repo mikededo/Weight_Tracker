@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:weight_tracker/data/database/user_preferences.dart';
-import 'package:weight_tracker/screens/add_user_screen.dart';
-import 'package:weight_tracker/screens/home.dart';
+
+import '../data/database/user_preferences.dart';
+import '../screens/add_user_screen.dart';
+import '../screens/home.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String routeName = '/splash_screen';

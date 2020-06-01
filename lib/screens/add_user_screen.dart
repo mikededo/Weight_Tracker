@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weight_tracker/data/blocs/slider_bloc/slider_bloc.dart';
-import 'package:weight_tracker/util/validators.dart';
-import 'package:weight_tracker/widgets/add_user_stepper.dart';
-import 'package:weight_tracker/widgets/default_page_layout.dart';
-import 'package:weight_tracker/widgets/screen_header.dart';
+
+import '../data/blocs/slider_bloc/slider_bloc.dart';
+import '../util/validators.dart';
+import '../widgets/add_user_stepper.dart';
+import '../widgets/default_page_layout.dart';
+import '../widgets/screen_header.dart';
 
 class AddUserScreen extends StatefulWidget {
   static const String routeName = '/add_user_screen';

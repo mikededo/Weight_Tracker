@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:weight_tracker/data.dart';
+
+import '../data.dart';
 
 class WeightLineChart extends StatelessWidget {
   final List<Color> gradientColors = [
