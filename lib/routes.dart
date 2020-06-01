@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weight_tracker/data/models/weight.dart';
 import 'package:weight_tracker/screens/add_user_screen.dart';
 import 'package:weight_tracker/screens/add_weight_screen.dart';
@@ -8,20 +7,13 @@ import 'package:weight_tracker/screens/history_screen.dart';
 import 'package:weight_tracker/screens/home.dart';
 import 'package:weight_tracker/screens/splash_screen.dart';
 
-import 'data/blocs/slider_bloc/slider_bloc.dart';
-
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case SplashScreen.routeName:
         return MaterialPageRoute(builder: (_) => SplashScreen());
       case AddUserScreen.routeName:
-        return MaterialPageRoute(
-          builder: (_) => BlocProvider<SliderBloc>(
-            create: (_) => SliderBloc(180.0),
-            child: AddUserScreen(),
-          ),
-        );
+        return MaterialPageRoute(builder: (_) => AddUserScreen());
       case Home.routeName:
         return MaterialPageRoute(builder: (_) => Home());
       case AddWeightScreen.routeName:

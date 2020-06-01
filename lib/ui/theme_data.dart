@@ -19,6 +19,13 @@ final Map<AppTheme, ThemeData> appThemeData = {
     ),
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Color(0xFF3d3e63),
+      behavior: SnackBarBehavior.floating,
+      contentTextStyle: TextStyle(
+        color: Colors.white,
+      ),
+    ),
     textTheme: GoogleFonts.workSansTextTheme().copyWith(
       // Screen header
       headline1: GoogleFonts.workSans().copyWith(
