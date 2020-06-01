@@ -43,7 +43,6 @@ class WeightHistory extends StatelessWidget {
                   height: constraints.maxHeight * 0.8,
                   child: BlocBuilder<WeightBloc, WeightState>(
                     builder: (context, state) {
-                      print(state);
                       if (state is WeightLoadInProgress ||
                           state is WeightInitial) {
                         return Center(child: CircularProgressIndicator());

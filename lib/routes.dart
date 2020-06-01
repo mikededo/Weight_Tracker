@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weight_tracker/data/models/user_data.dart';
 import 'package:weight_tracker/data/models/weight.dart';
 import 'package:weight_tracker/screens/add_user_screen.dart';
 import 'package:weight_tracker/screens/add_weight_screen.dart';
@@ -20,7 +21,12 @@ class RouteGenerator {
         final WeightData wd = settings.arguments as WeightData;
         return MaterialPageRoute(builder: (_) => AddWeightScreen(wd: wd));
       case ConfigurationScreen.routeName:
-        return MaterialPageRoute(builder: (_) => ConfigurationScreen());
+        final UserData prefs = settings.arguments as UserData;
+        return MaterialPageRoute(
+          builder: (_) => ConfigurationScreen(
+            prefs: prefs,
+          ),
+        );
       case HistoryScreen.routeName:
         return MaterialPageRoute(builder: (_) => HistoryScreen());
       default:

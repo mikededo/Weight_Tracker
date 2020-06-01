@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/data/models/user_data.dart';
 
 import '../data/blocs/slider_bloc/slider_bloc.dart';
 import '../data/database/user_preferences.dart';
@@ -9,35 +10,26 @@ import '../widgets/tile.dart';
 
 class ConfigurationScreen extends StatefulWidget {
   static const String routeName = '/configuration_screen';
+  final UserData prefs;
+
+  ConfigurationScreen({this.prefs});
 
   @override
   _ConfigurationScreenState createState() => _ConfigurationScreenState();
 }
 
 class _ConfigurationScreenState extends State<ConfigurationScreen> {
-  /// Slider values
-  double _height = 180;
-
   /// Switch values
   bool _switchOne = false;
   bool _switchTwo = false;
   bool _switchThree = false;
 
-  void _loadPreferences() async {
-    double height = await UserPreferences.getUserHeight();
-    setState(() => _height = height);
-  }
-
-  @override
-  void didChangeDependencies() {
-    _loadPreferences();
-    super.didChangeDependencies();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final UserData inData = widget.prefs;
+
     return BlocProvider<SliderBloc>(
-      create: (_) => SliderBloc(_height),
+      create: (_) => SliderBloc(inData.height.toDouble()),
       child: Scaffold(
         body: SafeArea(
           child: Padding(
@@ -115,7 +107,9 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            UserPreferences.saveHeight(_height.toInt());
+            UserPreferences.saveHeight(
+              BlocProvider.of<SliderBloc>(context).state.toInt(),
+            );
             Navigator.of(context).pop();
           },
           backgroundColor: Theme.of(context).accentColor,

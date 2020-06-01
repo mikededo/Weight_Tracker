@@ -7,7 +7,7 @@ abstract class WeightEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class WeightLoadedSuccess extends WeightEvent {}
+class WeightFetchData extends WeightEvent {}
 
 class WeightLoadOnStart extends WeightEvent {}
 

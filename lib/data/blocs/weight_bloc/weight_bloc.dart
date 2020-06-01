@@ -18,11 +18,20 @@ class WeightBloc extends Bloc<WeightEvent, WeightState> {
   @override
   WeightState get initialState => WeightInitial();
 
+  WeightData get lastWeight {
+    if (state is WeightLoadSuccess) {
+      // The last entered weight is the first of the list
+      return (state as WeightLoadSuccess).weightCollection.first;
+    }
+
+    return null;
+  }
+
   @override
   Stream<WeightState> mapEventToState(WeightEvent event) async* {
     if (event is WeightLoadOnStart) {
       yield* _mapLoadedDataToState();
-    } else if (event is WeightLoadSuccess) {
+    } else if (event is WeightFetchData) {
       yield* _mapLoadedDataToState();
     } else if (event is WeightAdded) {
       yield* _mapAddedDataToState(event);
@@ -33,7 +42,7 @@ class WeightBloc extends Bloc<WeightEvent, WeightState> {
     } else if (event is WeightDeletedAll) {
       yield* _mapDeleteAllDataToState();
     } else if (event is WeightListUpdated) {
-      yield * _mapWeightUpdateToState(event);
+      yield* _mapWeightUpdateToState(event);
     }
   }
 
@@ -51,6 +60,7 @@ class WeightBloc extends Bloc<WeightEvent, WeightState> {
   }
 
   Stream<WeightState> _mapAddedDataToState(WeightAdded event) async* {
+    List<WeightData> updatedData;
     if (state is WeightLoadSuccess) {
       // Search its position
       int index = (state as WeightLoadSuccess)
@@ -59,22 +69,21 @@ class WeightBloc extends Bloc<WeightEvent, WeightState> {
 
       // Update in the cached memory
       if (index == -1) {
-        final List<WeightData> updatedData = List.from(
+        updatedData = List.from(
           (state as WeightLoadSuccess).weightCollection,
         )..add(event.data);
-
-        yield WeightLoadSuccess(updatedData);
       } else {
-        final List<WeightData> updatedData = List.from(
+        updatedData = List.from(
           (state as WeightLoadSuccess).weightCollection,
         )..insert(index == -1 ? 0 : index, event.data);
-
-        yield WeightLoadSuccess(updatedData);
       }
-
-      // Add in the db
-      this._repository.addWeight(event.data);
+    } else if (state is WeightInitial) {
+      updatedData = List<WeightData>()..add(event.data);
     }
+
+    // Add in the db
+    await this._repository.addWeight(event.data);
+    yield WeightLoadSuccess(updatedData);
   }
 
   Stream<WeightState> _mapUpdatedDataToState(WeightUpdated event) async* {

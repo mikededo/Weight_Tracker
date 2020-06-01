@@ -39,21 +39,25 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Fetch last value from the weight bloc provider
+    WeightData lastData = BlocProvider.of<WeightBloc>(context).lastWeight;
+
     WeightData inValue = widget.wd;
     return BlocProvider<WeightCounterBloc>(
-      create: (_) => WeightCounterBloc(inValue == null ? null : inValue.weight),
+      create: (_) => WeightCounterBloc(
+        inValue?.weight ?? lastData?.weight ?? null,
+      ),
       child: Scaffold(
         body: DefaultPageLayout(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              ScreenHeader(text: 'New Weight'),
+              ScreenHeader(
+                  text: inValue == null ? 'New Weight' : 'Update Weight'),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 12.0),
-                child: Text(
-                  'Date',
-                  style: Theme.of(context).textTheme.headline5
-                ),
+                child:
+                    Text('Date', style: Theme.of(context).textTheme.headline5),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -85,7 +89,6 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
             backgroundColor: Theme.of(context).accentColor,
             onPressed: () {
               double weight = BlocProvider.of<WeightCounterBloc>(context).state;
-
               WeightData wd = WeightData(
                 inValue == null ? null : inValue.id,
                 weight: weight,

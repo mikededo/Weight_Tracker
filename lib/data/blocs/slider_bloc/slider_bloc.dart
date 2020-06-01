@@ -7,7 +7,9 @@ class SliderBloc extends Bloc<SliderEvent, double> {
   final double initialValue;
 
   SliderBloc(double initialValue)
-      : this.initialValue = initialValue ?? 180.0;
+      : this.initialValue = initialValue ?? 180.0 {
+        print(initialValue);
+      }
 
   @override
   double get initialState => initialValue;
