@@ -105,19 +105,21 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            UserPreferences.saveHeight(
-              BlocProvider.of<SliderBloc>(context).state.toInt(),
-            );
-            Navigator.of(context).pop();
-          },
-          backgroundColor: Theme.of(context).accentColor,
-          label: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0),
-            child: Text(
-              'SAVE CONFIGURATION',
-              style: Theme.of(context).textTheme.button,
+        floatingActionButton: Builder(
+                  builder: (ctx) => FloatingActionButton.extended(
+            onPressed: () {
+              UserPreferences.saveHeight(
+                BlocProvider.of<SliderBloc>(ctx).state.toInt(),
+              );
+              Navigator.of(context).pop();
+            },
+            backgroundColor: Theme.of(context).accentColor,
+            label: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Text(
+                'SAVE CONFIGURATION',
+                style: Theme.of(context).textTheme.button,
+              ),
             ),
           ),
         ),

@@ -85,8 +85,10 @@ class _BMITileState extends State<BMITile> {
     return list;
   }
 
-  void _loadUserHeight() async =>
-      _height = await UserPreferences.getUserHeight();
+  void _loadUserHeight() async {
+    double temp = await UserPreferences.getUserHeight();
+    setState(() => _height = temp);
+  }
 
   String _loadBMI(double bmiValue) {
     String res;
@@ -104,11 +106,6 @@ class _BMITileState extends State<BMITile> {
 
   double _calculateBmiValue(double weight) {
     return (weight ?? 80.0) / pow(_height / 100, 2);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
   }
 
   @override
