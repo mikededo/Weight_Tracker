@@ -21,7 +21,11 @@ class WeightDBBloc extends Bloc<WeightDBEvent, WeightDBState> {
   WeightData get lastWeight {
     if (state is WeightDBLoadSuccess) {
       // The last entered weight is the first of the list
-      return (state as WeightDBLoadSuccess).weightCollection.first;
+      if((state as WeightDBLoadSuccess).weightCollection.isEmpty) {
+        return null;
+      } else {
+        return (state as WeightDBLoadSuccess).weightCollection.first;
+      }
     }
 
     return null;
