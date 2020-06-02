@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 
 import '../data/database/user_shared_preferences.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
@@ -26,6 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
       (bool emptyPreferences) {
         if (!emptyPreferences) {
           BlocProvider.of<WeightDBBloc>(context).add(WeightDBLoadOnStart());
+          BlocProvider.of<UserPreferencesBloc>(context).add(UserPreferencesLoadPreferences());
           Navigator.of(context).pushReplacementNamed(Home.routeName);
         } else {
           Navigator.of(context).pushReplacementNamed(AddUserScreen.routeName);

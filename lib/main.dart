@@ -23,10 +23,7 @@ class WeightTracker extends StatelessWidget {
           create: (context) => WeightDBBloc(SqlWeightRepository()),
         ),
         BlocProvider(
-          create: (context) => UserPreferencesBloc()
-            ..add(
-              UserPreferencesLoadPreferences(),
-            ),
+          create: (context) => UserPreferencesBloc(),
         ),
       ],
       child: MaterialApp(

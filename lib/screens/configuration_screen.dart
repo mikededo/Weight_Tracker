@@ -112,8 +112,14 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
               floatingActionButton: Builder(
                 builder: (ctx) => FloatingActionButton.extended(
                   onPressed: () {
-                    UserSharedPreferences.saveHeight(
-                      BlocProvider.of<SliderBloc>(ctx).state.toInt(),
+                    BlocProvider.of<UserPreferencesBloc>(context).add(
+                      UserPreferencesAddPreferences(
+                        widget.prefs.copyWith(
+                          height: BlocProvider.of<SliderBloc>(ctx)
+                              .state
+                              .toInt(),
+                        ),
+                      ),
                     );
                     Navigator.of(context).pop();
                   },

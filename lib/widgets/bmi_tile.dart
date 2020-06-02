@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
+import 'package:weight_tracker/data/models/user_data.dart';
 
 import '../data/database/user_shared_preferences.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
@@ -137,33 +138,38 @@ class _BMITileState extends State<BMITile> {
                   } else {
                     double latestWeight = state.weightCollection.first.weight;
 
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        RichText(
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: _loadBMI(
-                                  _calculateBmiValue(latestWeight),
-                                ),
-                                style: Theme.of(context).textTheme.headline3,
+                    return BlocBuilder<UserPreferencesBloc, UserData>(
+                      builder: (context, state) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            RichText(
+                              text: TextSpan(
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: _loadBMI(
+                                      _calculateBmiValue(latestWeight),
+                                    ),
+                                    style:
+                                        Theme.of(context).textTheme.headline3,
+                                  ),
+                                  TextSpan(text: '  '),
+                                  _buildBMIResults(
+                                    _calculateBmiValue(latestWeight),
+                                  ),
+                                ],
                               ),
-                              TextSpan(text: '  '),
-                              _buildBMIResults(
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: _buildBars(
                                 _calculateBmiValue(latestWeight),
                               ),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: _buildBars(
-                            _calculateBmiValue(latestWeight),
-                          ),
-                        ),
-                      ],
+                            ),
+                          ],
+                        );
+                      },
                     );
                   }
                 } else {

@@ -21,6 +21,20 @@ class UserData {
     @required this.weightGoal,
   });
 
+  UserData copyWith({
+    String name,
+    String lastName,
+    int height,
+    double weightGoal,
+  }) {
+    return UserData(
+      name: name ?? this.name,
+      lastName: lastName ?? this.lastName,
+      height: height ?? this.height,
+      weightGoal: weightGoal ?? this.weightGoal,
+    );
+  }
+
   UserData.emptyData()
       : this.name = null,
         this.lastName = null,
