@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../data/database/user_preferences.dart';
-import '../data/blocs/weight_bloc/weight_bloc.dart';
+import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../widgets/tile.dart';
 
 class BMITile extends StatefulWidget {
@@ -125,13 +125,14 @@ class _BMITileState extends State<BMITile> {
           ),
           Tile(
             height: MediaQuery.of(context).size.height * 0.15,
-            child: BlocBuilder<WeightBloc, WeightState>(
+            child: BlocBuilder<WeightDBBloc, WeightDBState>(
               builder: (context, state) {
-                if (state is WeightLoadInProgress || state is WeightInitial) {
+                if (state is WeightDBLoadInProgress ||
+                    state is WeightDBInitial) {
                   return Center(
                     child: CircularProgressIndicator(),
                   );
-                } else if (state is WeightLoadSuccess) {
+                } else if (state is WeightDBLoadSuccess) {
                   if (state.weightCollection.isEmpty) {
                     return Center(
                       child: Text(

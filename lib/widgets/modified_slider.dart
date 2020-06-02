@@ -53,7 +53,7 @@ class ModifiedSlider extends StatelessWidget {
               divisions: (_max - _min).toInt(),
               onChanged: (double value) {
                 BlocProvider.of<SliderBloc>(context)
-                    .add(ModifySliderValue(value));
+                    .add(SliderBlocModified(value));
               },
             ),
             Padding(

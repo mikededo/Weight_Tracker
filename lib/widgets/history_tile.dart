@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../data/models/weight.dart';
-import '../data/blocs/weight_bloc/weight_bloc.dart';
+import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../screens/add_weight_screen.dart';
 import '../util/util.dart';
 import '../widgets/tile.dart';
@@ -150,8 +150,8 @@ class HistoryTile extends StatelessWidget {
                         FontAwesome.times,
                         color: Colors.red,
                       ),
-                      onTap: () => BlocProvider.of<WeightBloc>(context).add(
-                        WeightDeleted(weightData),
+                      onTap: () => BlocProvider.of<WeightDBBloc>(context).add(
+                        WeightDBDeleted(weightData),
                       ),
                     ),
                   ),

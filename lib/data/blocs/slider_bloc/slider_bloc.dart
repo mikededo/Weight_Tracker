@@ -16,10 +16,10 @@ class SliderBloc extends Bloc<SliderEvent, double> {
 
   @override
   Stream<double> mapEventToState(SliderEvent event) async* {
-    if (event is ModifySliderValue) {
+    if (event is SliderBlocModified) {
       // Yield the changed value
       yield event.value;
-    } else if (event is ResetToInitialValue) {
+    } else if (event is SliderBlocValueReset) {
       // We have the value stored
       yield initialValue;
     }

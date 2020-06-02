@@ -1,9 +1,9 @@
 abstract class SliderEvent {}
 
-class ModifySliderValue extends SliderEvent {
+class SliderBlocModified extends SliderEvent {
   final double value;
 
-  ModifySliderValue(this.value) : assert (value != null);
+  SliderBlocModified(this.value) : assert (value != null);
 }
 
-class ResetToInitialValue extends SliderEvent {}
+class SliderBlocValueReset extends SliderEvent {}

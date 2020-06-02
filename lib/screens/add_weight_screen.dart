@@ -6,7 +6,7 @@ import '../widgets/default_page_layout.dart';
 import '../widgets/screen_header.dart';
 import '../widgets/weight_value_tile.dart';
 import '../data/models/weight.dart';
-import '../data/blocs/weight_bloc/weight_bloc.dart';
+import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../data/blocs/weight_counter_bloc/weight_counter_bloc.dart';
 
 class AddWeightScreen extends StatefulWidget {
@@ -40,7 +40,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
   @override
   Widget build(BuildContext context) {
     // Fetch last value from the weight bloc provider
-    WeightData lastData = BlocProvider.of<WeightBloc>(context).lastWeight;
+    WeightData lastData = BlocProvider.of<WeightDBBloc>(context).lastWeight;
 
     WeightData inValue = widget.wd;
     return BlocProvider<WeightCounterBloc>(
@@ -94,8 +94,8 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
                 weight: weight,
                 date: _selectedDate,
               );
-              BlocProvider.of<WeightBloc>(context).add(
-                inValue == null ? WeightAdded(wd) : WeightUpdated(wd),
+              BlocProvider.of<WeightDBBloc>(context).add(
+                inValue == null ? WeightDBAdded(wd) : WeightDBUpdated(wd),
               );
 
               Navigator.of(context).pop();

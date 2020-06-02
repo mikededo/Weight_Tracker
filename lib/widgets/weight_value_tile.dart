@@ -5,14 +5,14 @@ import '../data/blocs/weight_counter_bloc/weight_counter_bloc.dart';
 import '../data/blocs/weight_counter_bloc/weight_counter_event.dart';
 
 class WeightValueTile extends StatelessWidget {
-  void _incrementWeight(context) =>
-      BlocProvider.of<WeightCounterBloc>(context).add(ModifyWeight(0.1));
+  void _incrementWeight(context) => BlocProvider.of<WeightCounterBloc>(context)
+      .add(WeightCounterModified(0.1));
 
-  void _decrementWeight(context) =>
-      BlocProvider.of<WeightCounterBloc>(context).add(ModifyWeight(-0.1));
+  void _decrementWeight(context) => BlocProvider.of<WeightCounterBloc>(context)
+      .add(WeightCounterModified(-0.1));
 
-  void _resetWeight(context) =>
-      BlocProvider.of<WeightCounterBloc>(context).add(ResetToInitialWeight());
+  void _reWeightCounterSet(context) =>
+      BlocProvider.of<WeightCounterBloc>(context).add(WeightCounterValueReset());
 
   Widget _addWeightButtonConfig(BuildContext context,
       {String text, Function onTap}) {
@@ -41,28 +41,28 @@ class WeightValueTile extends StatelessWidget {
         context,
         text: '-5kg',
         onTap: () => BlocProvider.of<WeightCounterBloc>(context).add(
-          ModifyWeight(-5.0),
+          WeightCounterModified(-5.0),
         ),
       ),
       _addWeightButtonConfig(
         context,
         text: '-2.5kg',
         onTap: () => BlocProvider.of<WeightCounterBloc>(context).add(
-          ModifyWeight(-2.5),
+          WeightCounterModified(-2.5),
         ),
       ),
       _addWeightButtonConfig(
         context,
         text: '+2.5kg',
         onTap: () => BlocProvider.of<WeightCounterBloc>(context).add(
-          ModifyWeight(2.5),
+          WeightCounterModified(2.5),
         ),
       ),
       _addWeightButtonConfig(
         context,
         text: '+5kg',
         onTap: () => BlocProvider.of<WeightCounterBloc>(context).add(
-          ModifyWeight(5.0),
+          WeightCounterModified(5.0),
         ),
       ),
     ];
@@ -98,7 +98,7 @@ class WeightValueTile extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () => _resetWeight(context),
+                onTap: () => _reWeightCounterSet(context),
                 child: Text(
                   'Reset',
                   style: Theme.of(context).textTheme.headline6,

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 import '../data/blocs/slider_bloc/slider_bloc.dart';
-import '../data/blocs/weight_bloc/weight_bloc.dart';
+import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../data/database/user_preferences.dart';
 import '../data/models/user_data.dart';
 import '../data/models/weight.dart';
@@ -238,9 +238,9 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
 
       // Save the data
       // Add the started weight
-      BlocProvider.of<WeightBloc>(context)
+      BlocProvider.of<WeightDBBloc>(context)
         ..add(
-          WeightAdded(
+          WeightDBAdded(
             WeightData(
               null,
               weight: _weightValue,

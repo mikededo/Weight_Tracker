@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../data/models/weight.dart';
-import '../data/blocs/weight_bloc/weight_bloc.dart';
+import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../screens/history_screen.dart';
 import '../widgets/history_tile.dart';
 
@@ -41,12 +41,12 @@ class WeightHistory extends StatelessWidget {
                 ),
                 Container(
                   height: constraints.maxHeight * 0.8,
-                  child: BlocBuilder<WeightBloc, WeightState>(
+                  child: BlocBuilder<WeightDBBloc, WeightDBState>(
                     builder: (context, state) {
-                      if (state is WeightLoadInProgress ||
-                          state is WeightInitial) {
+                      if (state is WeightDBLoadInProgress ||
+                          state is WeightDBInitial) {
                         return Center(child: CircularProgressIndicator());
-                      } else if (state is WeightLoadSuccess) {
+                      } else if (state is WeightDBLoadSuccess) {
                         // Get data list
                         List<WeightData> list = state.weightCollection;
 

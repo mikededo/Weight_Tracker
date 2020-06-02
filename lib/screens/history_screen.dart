@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../data/models/weight.dart';
-import '../data/blocs/weight_bloc/weight_bloc.dart';
+import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../screens/add_weight_screen.dart';
 import '../util/util.dart';
 import '../widgets/history_tile.dart';
@@ -38,7 +38,8 @@ class HistoryScreen extends StatelessWidget {
                 style: TextStyle(color: Theme.of(context).accentColor),
               ),
               onPressed: () {
-                BlocProvider.of<WeightBloc>(context).add(WeightDeletedAll());
+                BlocProvider.of<WeightDBBloc>(context)
+                    .add(WeightDBDeletedAll());
                 Navigator.of(context).pop();
               },
             ),
@@ -85,12 +86,12 @@ class HistoryScreen extends StatelessWidget {
                 ],
               ),
               Expanded(
-                child: BlocBuilder<WeightBloc, WeightState>(
+                child: BlocBuilder<WeightDBBloc, WeightDBState>(
                   builder: (context, state) {
-                    if (state is WeightLoadInProgress ||
-                        state is WeightInitial) {
+                    if (state is WeightDBLoadInProgress ||
+                        state is WeightDBInitial) {
                       return Center(child: CircularProgressIndicator());
-                    } else if (state is WeightLoadSuccess) {
+                    } else if (state is WeightDBLoadSuccess) {
                       /// Data already sorted
                       List<WeightData> list = state.weightCollection;
 

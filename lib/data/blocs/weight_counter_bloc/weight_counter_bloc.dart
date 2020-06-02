@@ -14,13 +14,13 @@ class WeightCounterBloc extends Bloc<WeightCounterEvent, double> {
 
   @override
   Stream<double> mapEventToState(WeightCounterEvent event) async* {
-    if (event is ModifyWeight) {
+    if (event is WeightCounterModified) {
       // Wether it is a positive or a negative value, we just sum it
       yield state + event.value;
-    } else if (event is SetWeight) {
+    } else if (event is WeightCounterSet) {
       // Set initial value
       yield event.value;
-    } else if (event is ResetToInitialWeight) {
+    } else if (event is WeightCounterValueReset) {
       // We have the value stored
       yield initialWeight;
     }
