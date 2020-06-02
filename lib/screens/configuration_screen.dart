@@ -42,7 +42,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                   ),
                   child: Column(
                     children: <Widget>[
-                      ScreenHeader(text: 'User Settings'),
+                      ScreenHeader(text: 'Settings'),
                       Tile(
                         margin: const EdgeInsets.only(
                           bottom: 6.0,

@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:weight_tracker/util/pair.dart';
 
+
+/// Class that contains the user data, not is configurations
 @immutable
 class UserData {
   final bool empty;
@@ -60,6 +63,10 @@ class UserData {
         this.empty = true;
 
   factory UserData.fromPrefs(SharedPreferences prefs) {
+    if (prefs.getKeys().isEmpty) {
+      return UserData.emptyData();
+    }
+
     return UserData(
       name: prefs.get(UD_NAME),
       lastName: prefs.get(UD_LASTNAME),
@@ -89,4 +96,13 @@ class UserData {
 
   Pair<String, double> get weightGoalKeyValue =>
       Pair<String, double>(first: UD_WEIGHT_GOAL, second: weightGoal);
+
+  @override
+  String toString() {
+    if (empty) {
+      return 'UserData(empty)';
+    }
+
+    return 'UserData(name: $name, lastName: $lastName, height: $height, initialWeight: $initialWeight, initialDate: $initialDate, weightGoal: $weightGoal)';
+  }
 }

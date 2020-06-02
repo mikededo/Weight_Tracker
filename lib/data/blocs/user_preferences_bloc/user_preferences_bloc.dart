@@ -37,7 +37,6 @@ class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
     UserPreferencesAddPreferences event,
   ) async* {
     try {
-      print(event.preferences);
       await UserSharedPreferences.addPreferences(event.preferences);
       yield await UserSharedPreferences.loadPreferences();
     } catch (_) {

@@ -33,7 +33,13 @@ class LoadingDataScreen extends StatelessWidget {
                           textAlign: TextAlign.center,
                           alignment: AlignmentDirectional.topStart,
                           text: [
-                            "Hello ${data.name}! \nWe are glad you have choosen us \nin this journey! \n\n Wait a second while we set everything!",
+                            """
+                            Hello ${data.name}! 
+                            We are glad you have choosen us 
+                            in this journey! 
+                            
+                            Wait a second while we set everything!
+                            """,
                           ],
                           textStyle: Theme.of(context).textTheme.bodyText1,
                           isRepeatingAnimation: false,
