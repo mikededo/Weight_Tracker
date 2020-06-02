@@ -16,7 +16,7 @@ class Data {
     Pair<double, double>(74.30, 4.0),
     Pair<double, double>(75.20, 4.5),
     Pair<double, double>(74.90, 5.0),
-    Pair<double, double>(72.60, 5.5) 
+    Pair<double, double>(72.60, 5.5)
   ];
 
   static double get length => weightDataList.length.floorToDouble();

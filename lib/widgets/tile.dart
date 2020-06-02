@@ -16,10 +16,11 @@ class Tile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding ?? const EdgeInsets.symmetric(
-        vertical: 16.0,
-        horizontal: 24.0,
-      ),
+      padding: padding ??
+          const EdgeInsets.symmetric(
+            vertical: 16.0,
+            horizontal: 24.0,
+          ),
       margin: margin ?? null,
       height: height ?? null,
       width: double.infinity,

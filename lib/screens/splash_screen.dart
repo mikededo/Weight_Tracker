@@ -27,7 +27,8 @@ class _SplashScreenState extends State<SplashScreen> {
       (bool emptyPreferences) {
         if (!emptyPreferences) {
           BlocProvider.of<WeightDBBloc>(context).add(WeightDBLoadOnStart());
-          BlocProvider.of<UserPreferencesBloc>(context).add(UserPreferencesLoadPreferences());
+          BlocProvider.of<UserPreferencesBloc>(context)
+              .add(UserPreferencesLoadPreferences());
           Navigator.of(context).pushReplacementNamed(Home.routeName);
         } else {
           Navigator.of(context).pushReplacementNamed(AddUserScreen.routeName);

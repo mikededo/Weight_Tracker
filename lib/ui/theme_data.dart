@@ -6,7 +6,6 @@ enum AppTheme { Dark, Light }
 final TextTheme textTheme = GoogleFonts.workSansTextTheme();
 final TextStyle textStyle = GoogleFonts.workSans();
 
-
 final Map<AppTheme, ThemeData> appThemeData = {
   AppTheme.Dark: ThemeData.dark().copyWith(
     scaffoldBackgroundColor: Color(0xFF191924),
@@ -79,6 +78,11 @@ final Map<AppTheme, ThemeData> appThemeData = {
         color: Color(0xFF8a8b98),
         letterSpacing: 0.5,
         fontSize: 20.0,
+      ),
+      subtitle2: textStyle.copyWith(
+        color: Colors.grey,
+        letterSpacing: 0.5,
+        fontSize: 14.0,
       ),
       button: textStyle.copyWith(
         color: Color(0xFF191924),

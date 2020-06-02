@@ -33,5 +33,3 @@ class UserPreferencesUpdatePreference extends UserPreferencesEvent {
   @override
   String toString() => 'PrefsUpdated {data: {$prefKey, $prefValue}';
 }
-
-

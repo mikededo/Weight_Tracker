@@ -12,7 +12,8 @@ class WeightValueTile extends StatelessWidget {
       .add(WeightCounterModified(-0.1));
 
   void _reWeightCounterSet(context) =>
-      BlocProvider.of<WeightCounterBloc>(context).add(WeightCounterValueReset());
+      BlocProvider.of<WeightCounterBloc>(context)
+          .add(WeightCounterValueReset());
 
   Widget _addWeightButtonConfig(BuildContext context,
       {String text, Function onTap}) {

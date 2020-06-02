@@ -115,9 +115,8 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                     BlocProvider.of<UserPreferencesBloc>(context).add(
                       UserPreferencesAddPreferences(
                         widget.prefs.copyWith(
-                          height: BlocProvider.of<SliderBloc>(ctx)
-                              .state
-                              .toInt(),
+                          height:
+                              BlocProvider.of<SliderBloc>(ctx).state.toInt(),
                         ),
                       ),
                     );

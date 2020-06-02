@@ -173,7 +173,7 @@ class _BMITileState extends State<BMITile> {
                     );
                   }
                 } else {
-                  // WeightLoadFailed
+                  // WeightDBLoadFailed
                   return Center(child: Text('Error loading data'));
                 }
               },

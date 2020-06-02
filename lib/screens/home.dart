@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 import 'package:weight_tracker/data/database/user_shared_preferences.dart';
+import 'package:weight_tracker/widgets/weight_progression.dart';
 
 import 'add_weight_screen.dart';
 import 'configuration_screen.dart';
@@ -43,21 +46,21 @@ class Home extends StatelessWidget {
                       onPressed: () async {
                         Navigator.of(context).pushNamed(
                           ConfigurationScreen.routeName,
-                          arguments: await UserSharedPreferences.loadPreferences(),
+                          arguments:
+                              BlocProvider.of<UserPreferencesBloc>(context)
+                                  .state,
                         );
                       },
                     )
                   ],
                 ),
               ),
+              /* 
+              Todo: Add graph
               SizedBox(height: 12.0),
-              WeightLineChart(),
+              WeightLineChart(), */
               SizedBox(height: 12.0),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.1,
-                width: double.infinity,
-                child: Text('Evolution'),
-              ),
+              WeightProgression(),
               SizedBox(height: 12.0),
               BMITile(),
               SizedBox(height: 12.0),

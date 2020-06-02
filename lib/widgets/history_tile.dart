@@ -108,9 +108,7 @@ class HistoryTile extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 4.0),
                         child: Text(
                           DateFormat.yMMMd().format(weightData.date),
-                          style: TextStyle(
-                            color: textGreyColor,
-                          ),
+                          style: Theme.of(context).textTheme.subtitle2,
                         ),
                       ),
                       _buildDiffText()
