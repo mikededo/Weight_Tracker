@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_data.dart';
 
-class UserPreferences {
+class UserSharedPreferences {
   /// Get the user saved preferences
   static Future<UserData> loadPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -20,17 +20,42 @@ class UserPreferences {
 
   /// Adds the preferences and returns the updated preferences
   static Future<UserData> addPreferences(UserData prefs) async {
-    await saveHeight(prefs.height);
+    saveUserName(prefs.name, prefs.lastName);
+    saveHeight(prefs.height);
+    saveWeightGoal(prefs.weightGoal);
 
     return loadPreferences();
   }
 
-  /// Saved the height preference value
+  /// Saves the name and last name preferences value
+  static Future<void> saveUserName(String name, String lastName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs
+      ..setString(
+        UserData.UD_NAME,
+        name,
+      )
+      ..setString(
+        UserData.UD_LASTNAME,
+        lastName,
+      );
+  }
+
+  /// Saves the height preference value
   static Future<void> saveHeight(int height) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(
       UserData.UD_HEIGHT,
       height,
+    );
+  }
+
+  /// Saves the weightGoal preference value
+  static Future<void> saveWeightGoal(double weightGoal) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setDouble(
+      UserData.UD_WEIGHT_GOAL,
+      weightGoal,
     );
   }
 

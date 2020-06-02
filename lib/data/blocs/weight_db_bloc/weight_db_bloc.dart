@@ -6,7 +6,8 @@ import 'package:equatable/equatable.dart';
 import '../../repositories/sql_weight_repository.dart';
 import '../../models/weight.dart';
 
-part 'weight';
+part 'weight_db_event.dart';
+part 'weight_db_state.dart';
 
 class WeightDBBloc extends Bloc<WeightDBEvent, WeightDBState> {
   final SqlWeightRepository _repository;
@@ -127,7 +128,8 @@ class WeightDBBloc extends Bloc<WeightDBEvent, WeightDBState> {
     }
   }
 
-  Stream<WeightDBState> _mapWeightUpdateToState(WeightDBListUpdated event) async* {
+  Stream<WeightDBState> _mapWeightUpdateToState(
+      WeightDBListUpdated event) async* {
     yield WeightDBLoadSuccess(event.weightList);
   }
 

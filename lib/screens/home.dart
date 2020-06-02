@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:weight_tracker/data/database/user_preferences.dart';
+import 'package:weight_tracker/data/database/user_shared_preferences.dart';
 
 import 'add_weight_screen.dart';
 import 'configuration_screen.dart';
@@ -43,7 +43,7 @@ class Home extends StatelessWidget {
                       onPressed: () async {
                         Navigator.of(context).pushNamed(
                           ConfigurationScreen.routeName,
-                          arguments: await UserPreferences.loadPreferences(),
+                          arguments: await UserSharedPreferences.loadPreferences(),
                         );
                       },
                     )

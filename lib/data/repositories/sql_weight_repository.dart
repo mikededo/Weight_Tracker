@@ -9,7 +9,6 @@ class SqlWeightRepository implements WeightRepository {
 
   @override
   Future<void> addWeight(WeightData wd) {
-    print('AddWeight');
     return _dao.addWeight(wd);
   }
 

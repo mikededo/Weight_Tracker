@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../data/database/user_preferences.dart';
+import '../data/database/user_shared_preferences.dart';
+import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../screens/add_user_screen.dart';
 import '../screens/home.dart';
 
@@ -13,7 +15,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   Future<bool> _checkUserPreferences() async {
-    return (await UserPreferences.loadPreferences()).isEmpty;
+    return (await UserSharedPreferences.loadPreferences()).isEmpty;
   }
 
   @override
@@ -23,6 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
     _checkUserPreferences().then(
       (bool emptyPreferences) {
         if (!emptyPreferences) {
+          BlocProvider.of<WeightDBBloc>(context).add(WeightDBLoadOnStart());
           Navigator.of(context).pushReplacementNamed(Home.routeName);
         } else {
           Navigator.of(context).pushReplacementNamed(AddUserScreen.routeName);

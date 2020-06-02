@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:weight_tracker/screens/loading_data_screen.dart';
 
 import '../data/blocs/slider_bloc/slider_bloc.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
-import '../data/database/user_preferences.dart';
+import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 import '../data/models/user_data.dart';
 import '../data/models/weight.dart';
 import '../screens/home.dart';
@@ -64,6 +65,7 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
           hintText: hint,
           contentPadding: EdgeInsets.zero,
         ),
+        textCapitalization: TextCapitalization.words,
         style: Theme.of(context).textTheme.bodyText1,
         keyboardType: keyboardType,
         cursorColor: Theme.of(context).accentColor,
@@ -249,16 +251,20 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
           ),
         );
 
-      await UserPreferences.addPreferences(
-        UserData(
-          name: _nameValue,
-          lastName: _lastNameValue,
-          height: height,
-          weightGoal: _goalWeightValue,
-        ),
-      );
+      BlocProvider.of<UserPreferencesBloc>(context)
+        ..add(
+          UserPreferencesAddPreferences(
+            UserData(
+              name: _nameValue,
+              lastName: _lastNameValue,
+              height: height,
+              weightGoal: _goalWeightValue,
+            ),
+          ),
+        );
 
-      Navigator.of(context).pushReplacementNamed(Home.routeName);
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => LoadingDataScreen()));
     }
   }
 

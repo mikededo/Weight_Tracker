@@ -2,8 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 
-import '../data/database/user_preferences.dart';
+import '../data/database/user_shared_preferences.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../widgets/tile.dart';
 
@@ -20,8 +21,6 @@ class BMITile extends StatefulWidget {
 }
 
 class _BMITileState extends State<BMITile> {
-  double _height;
-
   final List<int> _ranges = [12, 20, 26];
   final List<String> _bmiResultsText = [
     "Underweight",
@@ -85,11 +84,6 @@ class _BMITileState extends State<BMITile> {
     return list;
   }
 
-  void _loadUserHeight() async {
-    double temp = await UserPreferences.getUserHeight();
-    setState(() => _height = temp);
-  }
-
   String _loadBMI(double bmiValue) {
     String res;
 
@@ -105,13 +99,12 @@ class _BMITileState extends State<BMITile> {
   }
 
   double _calculateBmiValue(double weight) {
-    return (weight ?? 80.0) / pow(_height / 100, 2);
+    int height = BlocProvider.of<UserPreferencesBloc>(context).state.height;
+    return (weight ?? 80.0) / pow(height / 100, 2);
   }
 
   @override
   Widget build(BuildContext context) {
-    _loadUserHeight();
-
     return Container(
       height: MediaQuery.of(context).size.height * 0.2,
       width: double.infinity,

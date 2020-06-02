@@ -21,6 +21,12 @@ class UserData {
     @required this.weightGoal,
   });
 
+  UserData.emptyData()
+      : this.name = null,
+        this.lastName = null,
+        this.height = null,
+        this.weightGoal = null;
+
   factory UserData.fromPrefs(SharedPreferences prefs) {
     return UserData(
       name: prefs.get(UD_NAME),
@@ -28,6 +34,11 @@ class UserData {
       height: prefs.get(UD_HEIGHT),
       weightGoal: prefs.get(UD_WEIGHT_GOAL),
     );
+  }
+
+  @override
+  String toString() {
+    return 'UD: [$name, $lastName, $height, $weightGoal]';
   }
 
   bool get isEmpty => (height == null);
