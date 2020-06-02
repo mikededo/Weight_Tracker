@@ -1,22 +1,17 @@
-class Pair<T extends num, S extends num> {
-  T f;
-  S s;
-
-  Pair(this.f, this.s);
-}
+import 'package:weight_tracker/util/pair.dart';
 
 class Data {
   static List<Pair<double, double>> weightDataList = [
-    Pair<double, double>(78.80, 1.0),
-    Pair<double, double>(77.30, 1.5),
-    Pair<double, double>(76.60, 2.0),
-    Pair<double, double>(75.00, 2.5),
-    Pair<double, double>(75.70, 3.0),
-    Pair<double, double>(74.50, 3.5),
-    Pair<double, double>(74.30, 4.0),
-    Pair<double, double>(75.20, 4.5),
-    Pair<double, double>(74.90, 5.0),
-    Pair<double, double>(72.60, 5.5)
+    Pair<double, double>(first: 78.80, second: 1.0),
+    Pair<double, double>(first: 77.30, second: 1.5),
+    Pair<double, double>(first: 76.60, second: 2.0),
+    Pair<double, double>(first: 75.00, second: 2.5),
+    Pair<double, double>(first: 75.70, second: 3.0),
+    Pair<double, double>(first: 74.50, second: 3.5),
+    Pair<double, double>(first: 74.30, second: 4.0),
+    Pair<double, double>(first: 75.20, second: 4.5),
+    Pair<double, double>(first: 74.90, second: 5.0),
+    Pair<double, double>(first: 72.60, second: 5.5)
   ];
 
   static double get length => weightDataList.length.floorToDouble();
@@ -27,8 +22,8 @@ class Data {
     double max = 0;
 
     weightDataList.forEach((p) {
-      if (p.f > max) {
-        max = p.f;
+      if (p.first > max) {
+        max = p.first;
       }
     });
     return max;
@@ -39,8 +34,8 @@ class Data {
 
     weightDataList.forEach(
       (p) {
-        if (p.f < min) {
-          min = p.f;
+        if (p.first < min) {
+          min = p.first;
         }
       },
     );

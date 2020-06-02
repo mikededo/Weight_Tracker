@@ -36,9 +36,6 @@ class WeightHistory extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: constraints.maxHeight * 0.05,
-                ),
                 Container(
                   height: constraints.maxHeight * 0.8,
                   child: BlocBuilder<WeightDBBloc, WeightDBState>(

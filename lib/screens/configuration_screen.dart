@@ -4,7 +4,6 @@ import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences
 import 'package:weight_tracker/data/models/user_data.dart';
 
 import '../data/blocs/slider_bloc/slider_bloc.dart';
-import '../data/database/user_shared_preferences.dart';
 import '../widgets/modified_slider.dart';
 import '../widgets/screen_header.dart';
 import '../widgets/tile.dart';

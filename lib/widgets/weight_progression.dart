@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 import 'package:weight_tracker/data/blocs/weight_db_bloc/weight_db_bloc.dart';
+import 'package:weight_tracker/data/models/user_data.dart';
 import 'package:weight_tracker/data/models/weight.dart';
 import 'package:weight_tracker/widgets/tile.dart';
 
@@ -36,8 +38,12 @@ class WeightProgression extends StatelessWidget {
                     );
                   }
 
-                  // Weight collection from state is not empty save
+                  // Weight collection from state is not empty 
                   final List<WeightData> data = state.weightCollection;
+                  // User data has been loaded on start - prefs can't be deleted
+                  // State is not empty 
+                  UserData prefs = BlocProvider.of<UserPreferencesBloc>(context).state;
+
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -78,7 +84,7 @@ class WeightProgression extends StatelessWidget {
                           Column(
                             children: <Widget>[
                               Text(
-                                '80kg',
+                                '${prefs.weightGoal}kg',
                                 style: Theme.of(context).textTheme.headline5,
                               ),
                               SizedBox(height: 2.0),

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:weight_tracker/data/database/user_shared_preferences.dart';
 import 'package:weight_tracker/data/models/user_data.dart';
+import 'package:weight_tracker/util/pair.dart';
 
 part 'user_preferences_event.dart';
 
@@ -49,8 +50,10 @@ class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
   ) async* {
     try {
       await UserSharedPreferences.updatePreference(
-        event.prefKey,
-        event.prefValue,
+        Pair<String, dynamic>(
+          first: event.prefKey,
+          second: event.prefValue,
+        ),
       );
       yield await UserSharedPreferences.loadPreferences();
     } catch (_) {

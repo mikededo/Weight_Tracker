@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:weight_tracker/util/pair.dart';
 
 import '../models/user_data.dart';
 
@@ -10,9 +11,18 @@ class UserSharedPreferences {
   }
 
   /// Updates the peference saved as [key] if it exists
-  static Future<UserData> updatePreference(String key, dynamic value) async {
-    if (key == UserData.UD_HEIGHT) {
-      saveHeight(value as int);
+  static Future<UserData> updatePreference(Pair<String, dynamic> p) async {
+
+    if (p.first == UserData.UD_NAME || p.first == UserData.UD_LASTNAME) {
+      saveString(p);
+    } else if (p.first == UserData.UD_HEIGHT) {
+      saveInt(p);
+    } else if (p.first == UserData.UD_INITIAL_WEIGHT || p.first == UserData.UD_WEIGHT_GOAL) {
+      saveDouble(p);
+    } else if (p.first == UserData.UD_INITIAL_DATE) {
+      saveDateTime(p);
+    } else {
+      throw Exception('UpdatePreferences not found key');
     }
 
     return loadPreferences();
@@ -20,43 +30,38 @@ class UserSharedPreferences {
 
   /// Adds the preferences and returns the updated preferences
   static Future<UserData> addPreferences(UserData prefs) async {
-    saveUserName(prefs.name, prefs.lastName);
-    saveHeight(prefs.height);
-    saveWeightGoal(prefs.weightGoal);
+    saveString(prefs.nameKeyValue);
+    saveString(prefs.lastNameKeyValue);
+    saveInt(prefs.heightKeyValue);
+    saveDouble(prefs.initialWeightKeyValue);
+    saveDateTime(prefs.initialDateKeyValue);
+    saveDouble(prefs.weightGoalKeyValue);
 
     return loadPreferences();
   }
 
-  /// Saves the name and last name preferences value
-  static Future<void> saveUserName(String name, String lastName) async {
+  /// Saves a double in the key to the preferences
+  static Future<void> saveString(Pair<String, String> p) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs
-      ..setString(
-        UserData.UD_NAME,
-        name,
-      )
-      ..setString(
-        UserData.UD_LASTNAME,
-        lastName,
-      );
+    prefs.setString(p.first, p.second);
   }
 
-  /// Saves the height preference value
-  static Future<void> saveHeight(int height) async {
+  /// Saves a double in the key to the preferences
+  static Future<void> saveInt(Pair<String, int> p) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt(
-      UserData.UD_HEIGHT,
-      height,
-    );
+    prefs.setInt(p.first, p.second);
   }
 
-  /// Saves the weightGoal preference value
-  static Future<void> saveWeightGoal(double weightGoal) async {
+  /// Saves a double in the key to the preferences
+  static Future<void> saveDouble(Pair<String, double> p) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setDouble(
-      UserData.UD_WEIGHT_GOAL,
-      weightGoal,
-    );
+    prefs.setDouble(p.first, p.second);
+  }
+
+  /// Saves a datetime (as ISO string) in the key to the preferences
+  static Future<void> saveDateTime(Pair<String, DateTime> p) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(p.first, p.second.toIso8601String());
   }
 
   /// Returns the user height value

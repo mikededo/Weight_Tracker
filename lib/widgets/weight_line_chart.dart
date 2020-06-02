@@ -80,7 +80,7 @@ class WeightLineChart extends StatelessWidget {
     List<FlSpot> _list = [];
     for (int i = 0; i < Data.length; i++) {
       _list.add(
-        FlSpot(Data.pairOf(i).s, Data.pairOf(i).f),
+        FlSpot(Data.pairOf(i).second, Data.pairOf(i).first),
       );
     }
 

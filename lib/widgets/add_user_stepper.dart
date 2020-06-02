@@ -8,7 +8,6 @@ import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 import '../data/models/user_data.dart';
 import '../data/models/weight.dart';
-import '../screens/home.dart';
 import '../util/validators.dart';
 import '../widgets/tile.dart';
 
@@ -237,6 +236,7 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
 
       // Extract the height from the bloc
       int height = BlocProvider.of<SliderBloc>(context).state.floor();
+      DateTime timestamp = DateTime.now();
 
       // Save the data
       // Add the started weight
@@ -246,7 +246,7 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
             WeightData(
               null,
               weight: _weightValue,
-              date: DateTime.now(),
+              date: timestamp,
             ),
           ),
         );
@@ -258,7 +258,9 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
               name: _nameValue,
               lastName: _lastNameValue,
               height: height,
+              initialWeight: _weightValue,
               weightGoal: _goalWeightValue,
+              initialDate: timestamp,
             ),
           ),
         );
