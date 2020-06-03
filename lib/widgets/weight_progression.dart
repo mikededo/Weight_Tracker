@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -7,14 +5,16 @@ import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences
 import 'package:weight_tracker/data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import 'package:weight_tracker/data/models/user_data.dart';
 import 'package:weight_tracker/data/models/weight.dart';
+import 'package:weight_tracker/screens/progression_screen.dart';
 import 'package:weight_tracker/widgets/colored_progress_bar.dart';
 import 'package:weight_tracker/widgets/tile.dart';
+import 'package:weight_tracker/widgets/weight_date_tile.dart';
 
 class WeightProgression extends StatelessWidget {
   final List<String> progressionText = [
     "Don't worry! It's the beginning!",
     "Keep it going!",
-    "You are nearly there! One last effort!",
+    "Nearly there! One last effort!",
   ];
 
   String _getProgressionText(double percentage) {
@@ -60,7 +60,8 @@ class WeightProgression extends StatelessWidget {
             style: Theme.of(context).textTheme.subtitle1,
           ),
           InkWell(
-            onTap: () => Navigator.pushNamed(context, null),
+            onTap: () =>
+                Navigator.pushNamed(context, ProgressionScreen.routeName),
             child: Tile(
               height: MediaQuery.of(context).size.height * 0.15,
               child: BlocBuilder<WeightDBBloc, WeightDBState>(
@@ -97,22 +98,11 @@ class WeightProgression extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                Text(
-                                  '${weightData.last.weight.toStringAsFixed(1)}kg',
-                                  style: Theme.of(context).textTheme.headline5,
-                                ),
-                                SizedBox(height: 2.0),
-                                Text(
-                                  DateFormat('d/M/yy').format(
-                                    DateTime.now().subtract(
-                                      Duration(days: 27),
-                                    ),
-                                  ),
-                                  style: Theme.of(context).textTheme.subtitle2,
-                                ),
-                              ],
+                            WeightDateTile(
+                              weight: weightData.last.weight,
+                              date: DateTime.now().subtract(
+                                Duration(days: 27),
+                              ),
                             ),
                             RichText(
                               text: TextSpan(
@@ -131,19 +121,10 @@ class WeightProgression extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            Column(
-                              children: <Widget>[
-                                Text(
-                                  '${prefs.weightGoal}kg',
-                                  style: Theme.of(context).textTheme.headline5,
-                                ),
-                                SizedBox(height: 2.0),
-                                Text(
-                                  DateFormat('d/M/yy').format(DateTime.now()),
-                                  style: Theme.of(context).textTheme.subtitle2,
-                                )
-                              ],
-                            )
+                            WeightDateTile(
+                              weight: prefs.weightGoal,
+                              date: DateTime.now(),
+                            ),
                           ],
                         ),
                         Column(

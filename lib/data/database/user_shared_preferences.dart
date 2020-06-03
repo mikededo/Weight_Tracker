@@ -12,15 +12,35 @@ class UserSharedPreferences {
 
   /// Updates the peference saved as [key] if it exists
   static Future<UserData> updatePreference(Pair<String, dynamic> p) async {
-
     if (p.first == UserData.UD_NAME || p.first == UserData.UD_LASTNAME) {
-      saveString(p);
+      saveString(
+        Pair<String, String>(
+          first: p.first,
+          second: p.second as String,
+        ),
+      );
     } else if (p.first == UserData.UD_HEIGHT) {
-      saveInt(p);
-    } else if (p.first == UserData.UD_INITIAL_WEIGHT || p.first == UserData.UD_WEIGHT_GOAL) {
-      saveDouble(p);
+      saveInt(
+        Pair<String, int>(
+          first: p.first,
+          second: p.second as int,
+        ),
+      );
+    } else if (p.first == UserData.UD_INITIAL_WEIGHT ||
+        p.first == UserData.UD_WEIGHT_GOAL) {
+      saveDouble(
+        Pair<String, double>(
+          first: p.first,
+          second: p.second as double,
+        ),
+      );
     } else if (p.first == UserData.UD_INITIAL_DATE) {
-      saveDateTime(p);
+      saveDateTime(
+        Pair<String, DateTime>(
+          first: p.first,
+          second: p.second as DateTime,
+        ),
+      );
     } else {
       throw Exception('UpdatePreferences not found key');
     }

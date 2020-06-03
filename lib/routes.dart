@@ -8,6 +8,7 @@ import 'screens/add_weight_screen.dart';
 import 'screens/configuration_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/home.dart';
+import 'screens/progression_screen.dart';
 import 'screens/splash_screen.dart';
 
 class RouteGenerator {
@@ -23,15 +24,25 @@ class RouteGenerator {
           case Home.routeName:
             return Home();
           case AddWeightScreen.routeName:
-            final WeightData wd = settings.arguments as WeightData;
-            return AddWeightScreen(wd: wd);
+            if (settings.arguments is bool) {
+              return AddWeightScreen(
+                saveAsInitialWeight: true,
+                wd: null,
+              );
+            } else if (settings.arguments is WeightData) {
+              final WeightData wd = settings.arguments as WeightData;
+              return AddWeightScreen(wd: wd);
+            }
+            return _errorRoute('Illegal argumets for route AddWeightScreen');
           case ConfigurationScreen.routeName:
             final UserData prefs = settings.arguments as UserData;
             return ConfigurationScreen(prefs: prefs);
           case HistoryScreen.routeName:
             return HistoryScreen();
+          case ProgressionScreen.routeName:
+            return ProgressionScreen();
           default:
-            return _errorRoute();
+            return _errorRoute('404 Page not found');
         }
       },
       transitionDuration: Duration(milliseconds: 300),
@@ -42,7 +53,7 @@ class RouteGenerator {
         Widget child,
       ) {
         return effectMap[PageTransitionType.slideParallaxLeft](
-          Curves.linear,
+          Curves.fastLinearToSlowEaseIn,
           animation,
           secondaryAnimation,
           child,
@@ -51,11 +62,11 @@ class RouteGenerator {
     );
   }
 
-  static Widget _errorRoute() {
+  static Widget _errorRoute(String text) {
     return Scaffold(
       body: Center(
         child: Text(
-          '404 Page not found',
+          text,
           style: TextStyle(color: Colors.white),
         ),
       ),

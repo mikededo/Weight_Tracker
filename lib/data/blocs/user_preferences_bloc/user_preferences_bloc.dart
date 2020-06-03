@@ -56,6 +56,8 @@ class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
       );
       yield await UserSharedPreferences.loadPreferences();
     } catch (_) {
+      print('error');
+      print(_);
       yield UserData.emptyData();
     }
   }

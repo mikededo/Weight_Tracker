@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/widgets/default_page_layout.dart';
 
 import '../data/models/weight.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
@@ -59,79 +60,73 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 12.0,
-            horizontal: 20.0,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              ScreenHeader(text: 'Weight history'),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'All',
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  FlatButton(
-                    onPressed: () => _deleteAllDialog(context),
-                    child: Text(
-                      'Delete All',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: BlocBuilder<WeightDBBloc, WeightDBState>(
-                  builder: (context, state) {
-                    if (state is WeightDBLoadInProgress ||
-                        state is WeightDBInitial) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (state is WeightDBLoadSuccess) {
-                      /// Data already sorted
-                      List<WeightData> list = state.weightCollection;
-
-                      if (list.isEmpty) {
-                        return Center(
-                          child: Text(
-                            'Start adding \na weight!',
-                            style: Theme.of(context).textTheme.bodyText1,
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      } else {
-                        return ListView.builder(
-                          physics: BouncingScrollPhysics(),
-                          itemBuilder: (_, index) {
-                            if (index == list.length - 1) {
-                              return HistoryTile(
-                                weightData: list[index],
-                                prevWeightData: null,
-                                extended: true,
-                              );
-                            } else {
-                              return HistoryTile(
-                                weightData: list[index],
-                                prevWeightData: list[index + 1],
-                                extended: true,
-                              );
-                            }
-                          },
-                          itemCount: list.length,
-                        );
-                      }
-                    } else {
-                      return Center(child: Text('Failed loading data'));
-                    }
-                  },
+      body: DefaultPageLayout(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            ScreenHeader(text: 'Weight history'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'All',
+                  style: Theme.of(context).textTheme.headline5,
                 ),
+                FlatButton(
+                  onPressed: () => _deleteAllDialog(context),
+                  child: Text(
+                    'Delete All',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: BlocBuilder<WeightDBBloc, WeightDBState>(
+                builder: (context, state) {
+                  if (state is WeightDBLoadInProgress ||
+                      state is WeightDBInitial) {
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state is WeightDBLoadSuccess) {
+                    /// Data already sorted
+                    List<WeightData> list = state.weightCollection;
+
+                    if (list.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'Start adding \na weight!',
+                          style: Theme.of(context).textTheme.bodyText1,
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    } else {
+                      return ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        itemBuilder: (_, index) {
+                          if (index == list.length - 1) {
+                            return HistoryTile(
+                              weightData: list[index],
+                              prevWeightData: null,
+                              extended: true,
+                            );
+                          } else {
+                            return HistoryTile(
+                              weightData: list[index],
+                              prevWeightData: list[index + 1],
+                              extended: true,
+                            );
+                          }
+                        },
+                        itemCount: list.length,
+                      );
+                    }
+                  } else {
+                    return Center(child: Text('Failed loading data'));
+                  }
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(

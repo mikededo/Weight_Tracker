@@ -63,6 +63,7 @@ class UserData {
         this.empty = true;
 
   factory UserData.fromPrefs(SharedPreferences prefs) {
+    print(prefs);
     if (prefs.getKeys().isEmpty) {
       return UserData.emptyData();
     }

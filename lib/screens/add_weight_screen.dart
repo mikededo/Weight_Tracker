@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
+import 'package:weight_tracker/data/models/user_data.dart';
 
 import '../widgets/calendar.dart';
 import '../widgets/default_page_layout.dart';
@@ -12,8 +14,9 @@ import '../data/blocs/weight_counter_bloc/weight_counter_bloc.dart';
 class AddWeightScreen extends StatefulWidget {
   static const String routeName = '/add_weight_screen.dart';
   final WeightData wd;
+  final bool saveAsInitialWeight;
 
-  AddWeightScreen({this.wd});
+  AddWeightScreen({this.wd, this.saveAsInitialWeight = false});
 
   @override
   _AddWeightScreenState createState() => _AddWeightScreenState();
@@ -31,6 +34,37 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
     );
   }
 
+  void _saveWeight(BuildContext ctx, WeightData inValue) {
+    double weight = BlocProvider.of<WeightCounterBloc>(ctx).state;
+    if (widget.saveAsInitialWeight) {
+      // Save weight
+      BlocProvider.of<UserPreferencesBloc>(ctx).add(
+        UserPreferencesUpdatePreference(
+          UserData.UD_INITIAL_WEIGHT,
+          weight,
+        ),
+      );
+
+      // Save initial date
+      BlocProvider.of<UserPreferencesBloc>(ctx).add(
+        UserPreferencesUpdatePreference(
+          UserData.UD_INITIAL_DATE,
+          _selectedDate,
+        ),
+      );
+    } else {
+      // Create the data and add it to the DB
+      WeightData wd = WeightData(
+        inValue == null ? null : inValue.id,
+        weight: weight,
+        date: _selectedDate,
+      );
+      BlocProvider.of<WeightDBBloc>(ctx).add(
+        inValue == null ? WeightDBAdded(wd) : WeightDBUpdated(wd),
+      );
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -45,7 +79,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
     WeightData inValue = widget.wd;
     return BlocProvider<WeightCounterBloc>(
       create: (_) => WeightCounterBloc(
-        inValue?.weight ?? lastData?.weight ?? null,
+        inValue?.weight ?? lastData?.weight,
       ),
       child: Scaffold(
         body: DefaultPageLayout(
@@ -53,7 +87,12 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               ScreenHeader(
-                  text: inValue == null ? 'New Weight' : 'Update Weight'),
+                text: inValue != null
+                    ? 'Update Weight'
+                    : widget.saveAsInitialWeight
+                        ? 'Initial Weight'
+                        : 'New Weight',
+              ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 12.0),
                 child:
@@ -79,7 +118,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
           ),
         ),
         floatingActionButton: Builder(
-          builder: (context) => FloatingActionButton.extended(
+          builder: (ctx) => FloatingActionButton.extended(
             label: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
               child: Text(
@@ -88,15 +127,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
             ),
             backgroundColor: Theme.of(context).accentColor,
             onPressed: () {
-              double weight = BlocProvider.of<WeightCounterBloc>(context).state;
-              WeightData wd = WeightData(
-                inValue == null ? null : inValue.id,
-                weight: weight,
-                date: _selectedDate,
-              );
-              BlocProvider.of<WeightDBBloc>(context).add(
-                inValue == null ? WeightDBAdded(wd) : WeightDBUpdated(wd),
-              );
+              _saveWeight(ctx, inValue);
 
               Navigator.of(context).pop();
             },
