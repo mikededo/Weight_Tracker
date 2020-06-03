@@ -88,8 +88,10 @@ class HistoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.of(context)
-          .pushNamed(AddWeightScreen.routeName, arguments: weightData),
+      onTap: () => Navigator.of(context).pushNamed(
+        AddWeightScreen.routeName,
+        arguments: weightData,
+      ),
       child: Row(
         children: <Widget>[
           Expanded(

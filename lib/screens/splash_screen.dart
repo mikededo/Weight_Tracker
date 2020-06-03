@@ -29,9 +29,15 @@ class _SplashScreenState extends State<SplashScreen> {
           BlocProvider.of<WeightDBBloc>(context).add(WeightDBLoadOnStart());
           BlocProvider.of<UserPreferencesBloc>(context)
               .add(UserPreferencesLoadPreferences());
-          Navigator.of(context).pushReplacementNamed(Home.routeName);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            Home.routeName,
+            (route) => false,
+          );
         } else {
-          Navigator.of(context).pushReplacementNamed(AddUserScreen.routeName);
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AddUserScreen.routeName,
+            (route) => false,
+          );
         }
       },
     );
