@@ -1,8 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:weight_tracker/util/pair.dart';
-
+import '../../util/pair.dart';
 
 /// Class that contains the user data, not is configurations
 @immutable

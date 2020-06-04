@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:weight_tracker/screens/loading_data_screen.dart';
 
 import '../data/blocs/slider_bloc/slider_bloc.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
@@ -9,6 +8,7 @@ import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 import '../data/models/user_data.dart';
 import '../data/models/weight.dart';
 import '../util/validators.dart';
+import '../screens/loading_data_screen.dart';
 import '../widgets/tile.dart';
 
 import 'modified_slider.dart';

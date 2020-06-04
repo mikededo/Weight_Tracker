@@ -1,4 +1,4 @@
-import 'package:weight_tracker/util/pair.dart';
+import 'util/pair.dart';
 
 class Data {
   static List<Pair<double, double>> weightDataList = [

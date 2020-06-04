@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:weight_tracker/widgets/default_page_layout.dart';
-import 'package:weight_tracker/widgets/screen_header.dart';
+
+import '../widgets/default_page_layout.dart';
+import '../widgets/screen_header.dart';
 
 class ProgressionScreen extends StatelessWidget {
   static const String routeName = '/progression_string';

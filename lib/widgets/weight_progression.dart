@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
-import 'package:weight_tracker/data/blocs/weight_db_bloc/weight_db_bloc.dart';
-import 'package:weight_tracker/data/models/user_data.dart';
-import 'package:weight_tracker/data/models/weight.dart';
-import 'package:weight_tracker/screens/progression_screen.dart';
-import 'package:weight_tracker/widgets/colored_progress_bar.dart';
-import 'package:weight_tracker/widgets/tile.dart';
-import 'package:weight_tracker/widgets/weight_date_tile.dart';
+
+import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
+import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
+import '../data/models/user_data.dart';
+import '../data/models/weight.dart';
+import '../screens/progression_screen.dart';
+import '../widgets/colored_progress_bar.dart';
+import '../widgets/tile.dart';
+import '../widgets/weight_date_tile.dart';
 
 class WeightProgression extends StatelessWidget {
   final List<String> progressionText = [

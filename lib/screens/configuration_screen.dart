@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
-import 'package:weight_tracker/data/models/user_data.dart';
-import 'package:weight_tracker/screens/add_weight_screen.dart';
-import 'package:weight_tracker/widgets/default_page_layout.dart';
-import 'package:weight_tracker/widgets/weight_date_tile.dart';
 
 import '../data/blocs/slider_bloc/slider_bloc.dart';
+import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
+import '../data/models/user_data.dart';
+import '../screens/add_weight_screen.dart';
+import '../widgets/default_page_layout.dart';
 import '../widgets/modified_slider.dart';
 import '../widgets/screen_header.dart';
 import '../widgets/tile.dart';
+import '../widgets/weight_date_tile.dart';
 
 class ConfigurationScreen extends StatefulWidget {
   static const String routeName = '/configuration_screen';

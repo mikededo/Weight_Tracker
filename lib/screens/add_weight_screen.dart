@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
-import 'package:weight_tracker/data/models/user_data.dart';
 
+import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
+import '../data/blocs/weight_counter_bloc/weight_counter_bloc.dart';
+import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
+import '../data/models/user_data.dart';
+import '../data/models/weight.dart';
 import '../widgets/calendar.dart';
 import '../widgets/default_page_layout.dart';
 import '../widgets/screen_header.dart';
 import '../widgets/weight_value_tile.dart';
-import '../data/models/weight.dart';
-import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
-import '../data/blocs/weight_counter_bloc/weight_counter_bloc.dart';
 
 class AddWeightScreen extends StatefulWidget {
   static const String routeName = '/add_weight_screen.dart';

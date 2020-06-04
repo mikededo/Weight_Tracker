@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 
-import '../data/database/user_shared_preferences.dart';
+import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
+import '../data/database/user_shared_preferences.dart';
 import '../screens/add_user_screen.dart';
 import '../screens/home.dart';
 

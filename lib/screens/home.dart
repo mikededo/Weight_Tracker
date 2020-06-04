@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
-import 'package:weight_tracker/data/models/user_data.dart';
-import 'package:weight_tracker/widgets/default_page_layout.dart';
-import 'package:weight_tracker/widgets/weight_progression.dart';
 
 import 'add_weight_screen.dart';
 import 'configuration_screen.dart';
+import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
+import '../data/models/user_data.dart';
 import '../widgets/bmi_tile.dart';
 import '../widgets/history.dart';
+import '../widgets/default_page_layout.dart';
+import '../widgets/weight_progression.dart';
 
 class Home extends StatelessWidget {
   static const String routeName = '/home';
