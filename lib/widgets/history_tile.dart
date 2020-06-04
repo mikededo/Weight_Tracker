@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:weight_tracker/data/models/add_weight_helper.dart';
 
 import '../data/models/weight.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
@@ -90,7 +91,7 @@ class HistoryTile extends StatelessWidget {
     return InkWell(
       onTap: () => Navigator.of(context).pushNamed(
         AddWeightScreen.routeName,
-        arguments: weightData,
+        arguments: AddWeightHelper(weightData: weightData),
       ),
       child: Row(
         children: <Widget>[

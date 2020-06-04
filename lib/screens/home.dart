@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weight_tracker/data/blocs/weight_db_bloc/weight_db_bloc.dart';
+import 'package:weight_tracker/data/models/add_weight_helper.dart';
 
 import 'add_weight_screen.dart';
 import 'configuration_screen.dart';
@@ -70,10 +72,21 @@ class Home extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.pushNamed(
-          context,
-          AddWeightScreen.routeName,
-        ),
+        onPressed: () {
+          final WeightDBBloc bloc = BlocProvider.of<WeightDBBloc>(context);
+
+          if (bloc.state is WeightDBLoadSuccess ||
+              bloc.state is WeightDBLoadInProgress ||
+              bloc.state is WeightDBInitial) {
+            Navigator.pushNamed(
+              context,
+              AddWeightScreen.routeName,
+              arguments: AddWeightHelper(weightData: bloc.lastWeight),
+            );
+          }
+
+          bloc.close();
+        },
         backgroundColor: Theme.of(context).accentColor,
         label: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32.0),

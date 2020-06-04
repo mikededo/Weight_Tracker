@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_page_transition/flutter_page_transition.dart';
 
 import 'data/models/user_data.dart';
-import 'data/models/weight.dart';
+import 'data/models/add_weight_helper.dart';
 import 'screens/add_user_screen.dart';
 import 'screens/add_weight_screen.dart';
 import 'screens/configuration_screen.dart';
@@ -24,16 +24,7 @@ class RouteGenerator {
           case Home.routeName:
             return Home();
           case AddWeightScreen.routeName:
-            if (settings.arguments is bool) {
-              return AddWeightScreen(
-                saveAsInitialWeight: true,
-                wd: null,
-              );
-            } else if (settings.arguments is WeightData) {
-              final WeightData wd = settings.arguments as WeightData;
-              return AddWeightScreen(wd: wd);
-            }
-            return _errorRoute('Illegal argumets for route AddWeightScreen');
+            return _addWeightScreenHandler(settings.arguments);
           case ConfigurationScreen.routeName:
             final UserData prefs = settings.arguments as UserData;
             return ConfigurationScreen(prefs: prefs);
@@ -60,6 +51,14 @@ class RouteGenerator {
         );
       },
     );
+  }
+
+  static Widget _addWeightScreenHandler(dynamic args) {
+    if (args is AddWeightHelper) {
+      return AddWeightScreen(helper: args);
+    }
+
+    return _errorRoute('Illegal argumets for route AddWeightScreen');
   }
 
   static Widget _errorRoute(String text) {

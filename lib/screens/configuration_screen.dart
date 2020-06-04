@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/util/pair.dart';
+import 'package:weight_tracker/widgets/weight_preferences_configuration.dart';
 
 import '../data/blocs/slider_bloc/slider_bloc.dart';
 import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 import '../data/models/user_data.dart';
-import '../screens/add_weight_screen.dart';
+import '../data/models/add_weight_helper.dart';
 import '../widgets/default_page_layout.dart';
 import '../widgets/modified_slider.dart';
 import '../widgets/screen_header.dart';
 import '../widgets/tile.dart';
-import '../widgets/weight_date_tile.dart';
 
 class ConfigurationScreen extends StatefulWidget {
   static const String routeName = '/configuration_screen';
@@ -34,6 +35,7 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
         if (state.isEmpty) {
           return Center(child: CircularProgressIndicator());
         } else {
+          print(state.goalDate);
           return BlocProvider<SliderBloc>(
             create: (_) => SliderBloc(state.height.toDouble()),
             child: Scaffold(
@@ -54,46 +56,21 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                         middleText: false,
                       ),
                     ),
-                    InkWell(
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        AddWeightScreen.routeName,
-                        arguments: true,
+                    WeightPreferencesConfiguration(
+                      prefs: Pair<double, DateTime>(
+                        first: state.initialWeight,
+                        second: state.initialDate,
                       ),
-                      child: Tile(
-                        margin: const EdgeInsets.symmetric(vertical: 6.0),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24.0,
-                          vertical: 12.0,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  'Set Initial Weight',
-                                  style: Theme.of(context).textTheme.headline5,
-                                ),
-                                Text(
-                                  'Click to change it',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2
-                                      .copyWith(
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                )
-                              ],
-                            ),
-                            WeightDateTile(
-                              weight: state.initialWeight,
-                              date: state.initialDate,
-                            )
-                          ],
-                        ),
+                      addType: AddWeightType.Initial,
+                      text: 'Initial Weight',
+                    ),
+                    WeightPreferencesConfiguration(
+                      prefs: Pair<double, DateTime>(
+                        first: state.goalWeight,
+                        second: state.goalDate,
                       ),
+                      addType: AddWeightType.Goal,
+                      text: 'Goal Weight',
                     ),
                     Tile(
                       margin: const EdgeInsets.symmetric(vertical: 6.0),
@@ -154,6 +131,8 @@ class _ConfigurationScreenState extends State<ConfigurationScreen> {
                         widget.prefs.copyWith(
                           height:
                               BlocProvider.of<SliderBloc>(ctx).state.toInt(),
+                          initialWeight: state.initialWeight,
+                          initialDate: state.initialDate,
                         ),
                       ),
                     );

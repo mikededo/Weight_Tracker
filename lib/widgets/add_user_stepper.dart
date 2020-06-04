@@ -259,7 +259,7 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
               lastName: _lastNameValue,
               height: height,
               initialWeight: _weightValue,
-              weightGoal: _goalWeightValue,
+              goalWeight: _goalWeightValue,
               initialDate: timestamp,
             ),
           ),

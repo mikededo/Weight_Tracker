@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -5,21 +6,23 @@ import '../../util/pair.dart';
 
 /// Class that contains the user data, not is configurations
 @immutable
-class UserData {
+class UserData extends Equatable {
   final bool empty;
   final String name;
   final String lastName;
   final int height;
   final double initialWeight;
   final DateTime initialDate;
-  final double weightGoal;
+  final double goalWeight;
+  final DateTime goalDate;
 
   static const String UD_NAME = 'name';
   static const String UD_LASTNAME = 'last_name';
   static const String UD_HEIGHT = 'height';
   static const String UD_INITIAL_WEIGHT = 'initial_weight';
   static const String UD_INITIAL_DATE = 'initial_date';
-  static const String UD_WEIGHT_GOAL = 'weight_goal';
+  static const String UD_GOAL_WEIGHT = 'goal_weight';
+  static const String UD_GOAL_DATE = 'goal_date';
 
   UserData({
     @required this.name,
@@ -27,8 +30,10 @@ class UserData {
     @required this.height,
     @required this.initialWeight,
     @required this.initialDate,
-    @required this.weightGoal,
-  }) : this.empty = false;
+    @required this.goalWeight,
+    DateTime goalDate,
+  })  : this.empty = false,
+        this.goalDate = goalDate ?? initialDate.add(Duration(days: 27));
 
   UserData copyWith({
     String name,
@@ -37,6 +42,7 @@ class UserData {
     double initialWeight,
     DateTime initialDate,
     double weightGoal,
+    DateTime goalDate,
   }) {
     if (empty) {
       return UserData.emptyData();
@@ -48,7 +54,8 @@ class UserData {
       height: height ?? this.height,
       initialWeight: initialWeight ?? this.initialWeight,
       initialDate: initialDate ?? this.initialDate,
-      weightGoal: weightGoal ?? this.weightGoal,
+      goalWeight: weightGoal ?? this.goalWeight,
+      goalDate: goalDate ?? this.goalDate,
     );
   }
 
@@ -57,12 +64,12 @@ class UserData {
         this.lastName = null,
         this.height = null,
         this.initialWeight = null,
-        this.weightGoal = null,
         this.initialDate = null,
+        this.goalWeight = null,
+        this.goalDate = null,
         this.empty = true;
 
   factory UserData.fromPrefs(SharedPreferences prefs) {
-    print(prefs);
     if (prefs.getKeys().isEmpty) {
       return UserData.emptyData();
     }
@@ -73,7 +80,8 @@ class UserData {
       height: prefs.get(UD_HEIGHT),
       initialWeight: prefs.get(UD_INITIAL_WEIGHT),
       initialDate: DateTime.parse(prefs.get(UD_INITIAL_DATE)),
-      weightGoal: prefs.get(UD_WEIGHT_GOAL),
+      goalWeight: prefs.get(UD_GOAL_WEIGHT),
+      goalDate: DateTime.parse(prefs.get(UD_GOAL_DATE)),
     );
   }
 
@@ -94,8 +102,11 @@ class UserData {
   Pair<String, DateTime> get initialDateKeyValue =>
       Pair<String, DateTime>(first: UD_INITIAL_DATE, second: initialDate);
 
-  Pair<String, double> get weightGoalKeyValue =>
-      Pair<String, double>(first: UD_WEIGHT_GOAL, second: weightGoal);
+  Pair<String, double> get goalWeightKeyValue =>
+      Pair<String, double>(first: UD_GOAL_WEIGHT, second: goalWeight);
+
+  Pair<String, DateTime> get goalDateKeyValue =>
+      Pair<String, DateTime>(first: UD_GOAL_DATE, second: goalDate);
 
   @override
   String toString() {
@@ -103,6 +114,17 @@ class UserData {
       return 'UserData(empty)';
     }
 
-    return 'UserData(name: $name, lastName: $lastName, height: $height, initialWeight: $initialWeight, initialDate: $initialDate, weightGoal: $weightGoal)';
+    return 'UserData(name: $name, lastName: $lastName, height: $height, initialWeight: $initialWeight, initialDate: $initialDate, goalWeight: $goalWeight, goalDate: $goalDate)';
   }
+
+  @override
+  List<Object> get props => [
+        name,
+        lastName,
+        height,
+        initialWeight,
+        initialDate,
+        goalWeight,
+        goalDate,
+      ];
 }

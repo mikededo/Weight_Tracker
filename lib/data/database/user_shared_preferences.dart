@@ -12,6 +12,7 @@ class UserSharedPreferences {
 
   /// Updates the peference saved as [key] if it exists
   static Future<UserData> updatePreference(Pair<String, dynamic> p) async {
+    print(p.first);
     if (p.first == UserData.UD_NAME || p.first == UserData.UD_LASTNAME) {
       saveString(
         Pair<String, String>(
@@ -27,14 +28,16 @@ class UserSharedPreferences {
         ),
       );
     } else if (p.first == UserData.UD_INITIAL_WEIGHT ||
-        p.first == UserData.UD_WEIGHT_GOAL) {
+        p.first == UserData.UD_GOAL_WEIGHT) {
       saveDouble(
         Pair<String, double>(
           first: p.first,
           second: p.second as double,
         ),
       );
-    } else if (p.first == UserData.UD_INITIAL_DATE) {
+    } else if (p.first == UserData.UD_INITIAL_DATE ||
+        p.first == UserData.UD_GOAL_DATE) {
+          print(p.second);
       saveDateTime(
         Pair<String, DateTime>(
           first: p.first,
@@ -55,7 +58,8 @@ class UserSharedPreferences {
     saveInt(prefs.heightKeyValue);
     saveDouble(prefs.initialWeightKeyValue);
     saveDateTime(prefs.initialDateKeyValue);
-    saveDouble(prefs.weightGoalKeyValue);
+    saveDouble(prefs.goalWeightKeyValue);
+    saveDateTime(prefs.goalDateKeyValue);
 
     return loadPreferences();
   }
@@ -80,6 +84,7 @@ class UserSharedPreferences {
 
   /// Saves a datetime (as ISO string) in the key to the preferences
   static Future<void> saveDateTime(Pair<String, DateTime> p) async {
+    print('inside save data');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(p.first, p.second.toIso8601String());
   }

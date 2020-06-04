@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/data/models/add_weight_helper.dart';
 
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../data/blocs/weight_counter_bloc/weight_counter_bloc.dart';
@@ -13,10 +14,10 @@ import '../widgets/weight_value_tile.dart';
 
 class AddWeightScreen extends StatefulWidget {
   static const String routeName = '/add_weight_screen.dart';
-  final WeightData wd;
-  final bool saveAsInitialWeight;
 
-  AddWeightScreen({this.wd, this.saveAsInitialWeight = false});
+  final AddWeightHelper helper;
+
+  AddWeightScreen({this.helper}) : assert(helper != null);
 
   @override
   _AddWeightScreenState createState() => _AddWeightScreenState();
@@ -34,13 +35,24 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
     );
   }
 
-  void _saveWeight(BuildContext ctx, WeightData inValue) {
+  void _saveWeight(BuildContext ctx) {
     double weight = BlocProvider.of<WeightCounterBloc>(ctx).state;
-    if (widget.saveAsInitialWeight) {
+    if (widget.helper.addType != AddWeightType.Default) {
+      String weightKey;
+      String dateKey;
+      
+      if (widget.helper.addType == AddWeightType.Initial) {
+        weightKey = UserData.UD_INITIAL_WEIGHT;
+        dateKey = UserData.UD_INITIAL_DATE;
+      } else {
+        weightKey = UserData.UD_GOAL_WEIGHT;
+        dateKey = UserData.UD_GOAL_DATE;
+      }
+
       // Save weight
       BlocProvider.of<UserPreferencesBloc>(ctx).add(
         UserPreferencesUpdatePreference(
-          UserData.UD_INITIAL_WEIGHT,
+          weightKey,
           weight,
         ),
       );
@@ -48,27 +60,54 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
       // Save initial date
       BlocProvider.of<UserPreferencesBloc>(ctx).add(
         UserPreferencesUpdatePreference(
-          UserData.UD_INITIAL_DATE,
+          dateKey,
           _selectedDate,
         ),
       );
+    } else if (widget.helper.addType == AddWeightType.Goal) {
+
     } else {
       // Create the data and add it to the DB
       WeightData wd = WeightData(
-        inValue == null ? null : inValue.id,
+        widget.helper.weightData == null ? null : widget.helper.weightData.id,
         weight: weight,
         date: _selectedDate,
       );
       BlocProvider.of<WeightDBBloc>(ctx).add(
-        inValue == null ? WeightDBAdded(wd) : WeightDBUpdated(wd),
+        widget.helper.weightData == null
+            ? WeightDBAdded(wd)
+            : WeightDBUpdated(wd),
       );
+    }
+  }
+
+  String _getScreenHeader() {
+    if (widget.helper.addType == AddWeightType.Initial) {
+      return 'Initial Weight';
+    } else if (widget.helper.addType == AddWeightType.Goal) {
+      return 'Goal Weight';
+    } else {
+      return 'New Weight';
+    }
+  }
+
+  String _getButtonText() {
+    if (widget.helper.addType == AddWeightType.Initial ||
+        widget.helper.addType == AddWeightType.Goal) {
+      return 'SET WEIGHT';
+    } else if (widget.helper.weightData != null) {
+      return 'UPDATE WEIGHT';
+    } else {
+      return 'ADD WEIGHT';
     }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _selectedDate = widget.wd == null ? DateTime.now() : widget.wd.date;
+    _selectedDate = widget.helper.weightData == null
+        ? DateTime.now()
+        : widget.helper.weightData.date;
   }
 
   @override
@@ -76,7 +115,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
     // Fetch last value from the weight bloc provider
     WeightData lastData = BlocProvider.of<WeightDBBloc>(context).lastWeight;
 
-    WeightData inValue = widget.wd;
+    WeightData inValue = widget.helper.weightData;
     return BlocProvider<WeightCounterBloc>(
       create: (_) => WeightCounterBloc(
         inValue?.weight ?? lastData?.weight,
@@ -87,16 +126,14 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               ScreenHeader(
-                text: inValue != null
-                    ? 'Update Weight'
-                    : widget.saveAsInitialWeight
-                        ? 'Initial Weight'
-                        : 'New Weight',
+                text: _getScreenHeader(),
               ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 12.0),
-                child:
-                    Text('Date', style: Theme.of(context).textTheme.headline5),
+                child: Text(
+                  'Date',
+                  style: Theme.of(context).textTheme.headline5,
+                ),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -121,13 +158,11 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
           builder: (ctx) => FloatingActionButton.extended(
             label: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Text(
-                inValue == null ? 'ADD WEIGHT' : 'UPDATE WEIGHT',
-              ),
+              child: Text(_getButtonText()),
             ),
             backgroundColor: Theme.of(context).accentColor,
             onPressed: () {
-              _saveWeight(ctx, inValue);
+              _saveWeight(ctx);
 
               Navigator.of(context).pop();
             },

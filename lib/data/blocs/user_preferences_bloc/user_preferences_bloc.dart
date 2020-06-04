@@ -26,28 +26,35 @@ class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
   }
 
   Stream<UserData> _mapLoadPreferencesToState() async* {
+    UserData lastState = state;
     try {
       yield await UserSharedPreferences.loadPreferences();
     } catch (_) {
-      yield UserData.emptyData();
+      print(_);
+      yield lastState;
     }
   }
 
   Stream<UserData> _mapAddPreferencesToState(
     UserPreferencesAddPreferences event,
   ) async* {
+    UserData lastState = state;
     try {
       await UserSharedPreferences.addPreferences(event.preferences);
       yield await UserSharedPreferences.loadPreferences();
     } catch (_) {
-      yield UserData.emptyData();
+      print(_);
+      yield lastState;
     }
   }
 
   Stream<UserData> _mapUpdatePreferenceToState(
     UserPreferencesUpdatePreference event,
   ) async* {
+    UserData lastState = state;
     try {
+      print(event.prefKey is DateTime);
+      print(event.prefValue is DateTime);
       await UserSharedPreferences.updatePreference(
         Pair<String, dynamic>(
           first: event.prefKey,
@@ -56,7 +63,8 @@ class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
       );
       yield await UserSharedPreferences.loadPreferences();
     } catch (_) {
-      yield UserData.emptyData();
+      print(_);
+      yield lastState;
     }
   }
 }

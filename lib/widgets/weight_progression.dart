@@ -60,8 +60,10 @@ class WeightProgression extends StatelessWidget {
             style: Theme.of(context).textTheme.subtitle1,
           ),
           InkWell(
-            onTap: () =>
-                Navigator.pushNamed(context, ProgressionScreen.routeName),
+            onTap: () => Navigator.pushNamed(
+              context,
+              ProgressionScreen.routeName,
+            ),
             child: Tile(
               height: MediaQuery.of(context).size.height * 0.15,
               child: BlocBuilder<WeightDBBloc, WeightDBState>(
@@ -82,62 +84,64 @@ class WeightProgression extends StatelessWidget {
 
                     // Weight collection from state is not empty
                     final List<WeightData> weightData = state.weightCollection;
-                    // User data has been loaded on start - prefs can't be deleted
-                    UserData prefs =
-                        BlocProvider.of<UserPreferencesBloc>(context).state;
 
-                    // Calculate the pecentage
-                    double percentage = _getProgressValue(
-                      weightData.last.weight,
-                      weightData.first.weight,
-                      prefs.weightGoal,
-                    );
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
+                    return BlocBuilder<UserPreferencesBloc, UserData>(
+                      builder: (context, UserData prefs) {
+                        // We know state user data is not empty
+                        double percentage = _getProgressValue(
+                          prefs.initialWeight,
+                          weightData.first.weight,
+                          prefs.goalWeight,
+                        );
+
+                        return Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            WeightDateTile(
-                              weight: weightData.last.weight,
-                              date: DateTime.now().subtract(
-                                Duration(days: 27),
-                              ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: weightData.first.weight
-                                        .toStringAsFixed(1),
-                                    style:
-                                        Theme.of(context).textTheme.headline2,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                WeightDateTile(
+                                  weight: prefs.initialWeight,
+                                  date: prefs.initialDate,
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                        text: weightData.first.weight
+                                            .toStringAsFixed(1),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline2,
+                                      ),
+                                      TextSpan(
+                                        text: 'kg',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5,
+                                      ),
+                                    ],
                                   ),
-                                  TextSpan(
-                                    text: 'kg',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
-                                  ),
-                                ],
-                              ),
+                                ),
+                                WeightDateTile(
+                                  weight: prefs.goalWeight,
+                                  date: prefs.goalDate,
+                                ),
+                              ],
                             ),
-                            WeightDateTile(
-                              weight: prefs.weightGoal,
-                              date: DateTime.now(),
+                            Column(
+                              children: <Widget>[
+                                Text(
+                                  _getProgressionText(percentage),
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                ),
+                                SizedBox(height: 8.0),
+                                ColoredProgressBar(percentage),
+                              ],
                             ),
                           ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              _getProgressionText(percentage),
-                              style: Theme.of(context).textTheme.subtitle2,
-                            ),
-                            SizedBox(height: 8.0),
-                            ColoredProgressBar(percentage),
-                          ],
-                        ),
-                      ],
+                        );
+                      },
                     );
                   } else {
                     // WeightBDLoadFailure

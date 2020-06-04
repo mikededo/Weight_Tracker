@@ -20,11 +20,7 @@ class WeightDateTile extends StatelessWidget {
         ),
         SizedBox(height: 2.0),
         Text(
-          DateFormat('d/M/yy').format(
-            DateTime.now().subtract(
-              Duration(days: 27),
-            ),
-          ),
+          DateFormat('d/M/yy').format(date),
           style: Theme.of(context).textTheme.subtitle2,
         ),
       ],
