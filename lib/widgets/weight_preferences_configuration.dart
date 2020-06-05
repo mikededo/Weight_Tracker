@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:weight_tracker/data/models/add_weight_helper.dart';
-import 'package:weight_tracker/data/models/weight.dart';
-import 'package:weight_tracker/screens/add_weight_screen.dart';
-import 'package:weight_tracker/util/pair.dart';
 
-import 'tile.dart';
+import '../data/models/add_weight_helper.dart';
+import '../data/models/weight.dart';
+import '../screens/add_weight_screen.dart';
+import '../util/pair.dart';
+import '../util/util.dart';
+
+import 'configuration_tile.dart';
 import 'weight_date_tile.dart';
 
 class WeightPreferencesConfiguration extends StatelessWidget {
   final Pair<double, DateTime> prefs;
   final String text;
   final AddWeightType addType;
+  final Unit units;
+
   const WeightPreferencesConfiguration({
     @required this.prefs,
     @required this.text,
     @required this.addType,
+    @required this.units,
   });
 
   @override
@@ -24,7 +29,9 @@ class WeightPreferencesConfiguration extends StatelessWidget {
         // Create a dummy weight data value
         WeightData temp = WeightData(
           null,
-          weight: prefs.first,
+          weight: units == Unit.Metric
+              ? prefs.first
+              : UnitConverter.lbsToKg(prefs.first),
           date: prefs.second,
         );
 
@@ -34,38 +41,17 @@ class WeightPreferencesConfiguration extends StatelessWidget {
           arguments: AddWeightHelper(
             weightData: temp,
             addType: addType,
+            units: units,
           ),
         );
       },
-      child: Tile(
-        margin: const EdgeInsets.symmetric(vertical: 6.0),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24.0,
-          vertical: 12.0,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  text,
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-                Text(
-                  'Click to change it',
-                  style: Theme.of(context).textTheme.subtitle2.copyWith(
-                        fontStyle: FontStyle.italic,
-                      ),
-                )
-              ],
-            ),
-            WeightDateTile(
-              weight: prefs.first,
-              date: prefs.second,
-            )
-          ],
+      child: ConfigurationTile(
+        title: text,
+        subtitle: 'Click to change it',
+        trailing: WeightDateTile(
+          weight: prefs.first,
+          date: prefs.second,
+          unit: units,
         ),
       ),
     );

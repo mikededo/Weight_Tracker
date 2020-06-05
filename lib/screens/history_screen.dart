@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 import 'package:weight_tracker/data/models/add_weight_helper.dart';
 
 import '../data/models/weight.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../screens/add_weight_screen.dart';
-import '../util/util.dart';
 import '../widgets/default_page_layout.dart';
 import '../widgets/history_tile.dart';
 import '../widgets/screen_header.dart';
@@ -22,7 +22,7 @@ class HistoryScreen extends StatelessWidget {
           elevation: 0.0,
           title: Text(
             'Delete all data',
-            style: TextStyle(color: textWhiteColor),
+            style: TextStyle(color: Colors.white),
           ),
           content: Text(
             'This action is irreversible. Are you sure?',
@@ -132,19 +132,21 @@ class HistoryScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          final WeightDBBloc bloc = BlocProvider.of<WeightDBBloc>(context);
+          final WeightDBState state = BlocProvider.of<WeightDBBloc>(context).state;
 
-          if (bloc.state is WeightDBLoadSuccess ||
-              bloc.state is WeightDBLoadInProgress ||
-              bloc.state is WeightDBInitial) {
+          if (state is WeightDBLoadSuccess ||
+              state is WeightDBLoadInProgress ||
+              state is WeightDBInitial) {
             Navigator.pushNamed(
               context,
               AddWeightScreen.routeName,
-              arguments: AddWeightHelper(weightData: bloc.lastWeight),
+              arguments: AddWeightHelper(
+                units: BlocProvider.of<UserPreferencesBloc>(context)
+                    .state
+                    .dataUnits,
+              ),
             );
           }
-
-          bloc.close();
         },
         backgroundColor: Theme.of(context).accentColor,
         label: Padding(

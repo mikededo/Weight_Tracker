@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:weight_tracker/util/util.dart';
 import '../../database/user_shared_preferences.dart';
 import '../../models/user_data.dart';
 import '../../../util/pair.dart';
@@ -22,7 +23,9 @@ class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
       yield* _mapAddPreferencesToState(event);
     } else if (event is UserPreferencesUpdatePreference) {
       yield* _mapUpdatePreferenceToState(event);
-    }
+    } else if (event is UserPreferencesAddUnit) {
+      yield* _mapAddUnitToState(event);
+    } 
   }
 
   Stream<UserData> _mapLoadPreferencesToState() async* {
@@ -30,7 +33,6 @@ class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
     try {
       yield await UserSharedPreferences.loadPreferences();
     } catch (_) {
-      print(_);
       yield lastState;
     }
   }
@@ -41,9 +43,10 @@ class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
     UserData lastState = state;
     try {
       await UserSharedPreferences.addPreferences(event.preferences);
-      yield await UserSharedPreferences.loadPreferences();
+      // Check if there are no errors
+      UserData temp = await UserSharedPreferences.loadPreferences();
+      yield temp;
     } catch (_) {
-      print(_);
       yield lastState;
     }
   }
@@ -53,8 +56,6 @@ class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
   ) async* {
     UserData lastState = state;
     try {
-      print(event.prefKey is DateTime);
-      print(event.prefValue is DateTime);
       await UserSharedPreferences.updatePreference(
         Pair<String, dynamic>(
           first: event.prefKey,
@@ -63,7 +64,21 @@ class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
       );
       yield await UserSharedPreferences.loadPreferences();
     } catch (_) {
-      print(_);
+      yield lastState;
+    }
+  }
+
+  Stream<UserData> _mapAddUnitToState(UserPreferencesAddUnit event) async* {
+    UserData lastState = state;
+    try {
+      await UserSharedPreferences.updatePreference(
+        Pair<String, Unit>(
+          first: UserData.UD_UNIT,
+          second: event.unit,
+        ),
+      );
+      yield await UserSharedPreferences.loadPreferences();
+    } catch (_) {
       yield lastState;
     }
   }

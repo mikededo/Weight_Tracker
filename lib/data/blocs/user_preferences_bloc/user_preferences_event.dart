@@ -33,3 +33,19 @@ class UserPreferencesUpdatePreference extends UserPreferencesEvent {
   @override
   String toString() => 'PrefsUpdated {data: {$prefKey, $prefValue}';
 }
+
+class UserPreferencesAddUnit extends UserPreferencesEvent {
+  final Unit unit;
+
+  const UserPreferencesAddUnit(this.unit);
+
+  @override
+  List<Object> get props => [unit];
+
+  @override
+  String toString() {
+    return 'AddUnit {data: ${UnitConverter.valueFromUnit(unit)}';
+  }
+}
+
+class UserPreferencesReset extends UserPreferencesEvent {}

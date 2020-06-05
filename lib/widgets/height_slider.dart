@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/util/util.dart';
 
 import '../data/blocs/slider_bloc/slider_bloc.dart';
 import '../data/blocs/slider_bloc/slider_event.dart';
 
-class ModifiedSlider extends StatelessWidget {
+class HeightSlider extends StatelessWidget {
   final double _min;
   final double _max;
-  final bool withText;
-  final bool middleText;
+  final bool _withText;
+  final bool _middleText;
+  final Unit _unit;
 
-  ModifiedSlider({double min, double max, bool withText, bool middleText})
-      : assert(min < max),
+  HeightSlider({
+    double min,
+    double max,
+    bool withText,
+    bool middleText,
+    Unit units,
+  })  : assert(min < max),
         this._min = min ?? 0,
         this._max = max ?? 100,
-        this.withText = withText ?? true,
-        this.middleText = middleText ?? true;
+        this._withText = withText ?? true,
+        this._middleText = middleText ?? true,
+        this._unit = units ?? Unit.Metric;
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +37,18 @@ class ModifiedSlider extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  withText
+                  _withText
                       ? Text(
                           'Set your height',
                           style: Theme.of(context).textTheme.headline5,
                         )
                       : SizedBox(),
-                  middleText
+                  _middleText
                       ? SizedBox()
                       : Text(
-                          '${height.toStringAsFixed(0)} cm',
+                          _unit == Unit.Metric
+                              ? UnitConverter.cmToString(height)
+                              : UnitConverter.feetToString(height),
                           style: Theme.of(context).textTheme.headline5,
                         ),
                 ],
@@ -53,7 +63,7 @@ class ModifiedSlider extends StatelessWidget {
               divisions: (_max - _min).toInt(),
               onChanged: (double value) {
                 BlocProvider.of<SliderBloc>(context)
-                    .add(SliderBlocModified(value));
+                    .add(SliderBlocModified(value.floorToDouble()));
               },
             ),
             Padding(
@@ -63,17 +73,23 @@ class ModifiedSlider extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    _min.toStringAsFixed(0),
+                    _unit == Unit.Metric
+                        ? UnitConverter.cmToString(_min)
+                        : UnitConverter.feetToString(_min),
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
-                  middleText
+                  _middleText
                       ? Text(
-                          height.toStringAsFixed(0),
+                          _unit == Unit.Metric
+                              ? UnitConverter.cmToString(height)
+                              : UnitConverter.feetToString(height),
                           style: Theme.of(context).textTheme.headline5,
                         )
                       : SizedBox(),
                   Text(
-                    _max.toStringAsFixed(0),
+                    _unit == Unit.Metric
+                        ? UnitConverter.cmToString(_max)
+                        : UnitConverter.feetToString(_max),
                     style: Theme.of(context).textTheme.bodyText1,
                   )
                 ],

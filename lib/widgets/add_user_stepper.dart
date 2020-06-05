@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:weight_tracker/util/util.dart';
 
 import '../data/blocs/slider_bloc/slider_bloc.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
@@ -11,7 +12,7 @@ import '../util/validators.dart';
 import '../screens/loading_data_screen.dart';
 import '../widgets/tile.dart';
 
-import 'modified_slider.dart';
+import 'height_slider.dart';
 
 class AddUserStepper extends StatefulWidget {
   @override
@@ -114,7 +115,7 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
         stepNum: 1,
         children: <Widget>[
           _buildField(
-            hint: 'Initial weight',
+            hint: 'Initial weight ' + (_metricUnits ? '(kg)' : '(lbs)'),
             keyboardType: TextInputType.numberWithOptions(
               signed: false,
               decimal: true,
@@ -134,7 +135,7 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
             },
           ),
           _buildField(
-            hint: 'Goal weight',
+            hint: 'Goal weight ' + (_metricUnits ? '(kg)' : '(lbs)'),
             keyboardType: TextInputType.numberWithOptions(
               signed: false,
               decimal: true,
@@ -163,10 +164,11 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
             padding: const EdgeInsets.symmetric(
               vertical: 12.0,
             ),
-            child: ModifiedSlider(
+            child: HeightSlider(
               min: 50,
               max: 225,
               withText: false,
+              units: _metricUnits ? Unit.Metric : Unit.Imperial,
             ),
           ),
         ],
@@ -233,24 +235,28 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
     } else {
       // Save all the elements
       _formKey.currentState.save();
-
       // Extract the height from the bloc
-      int height = BlocProvider.of<SliderBloc>(context).state.floor();
+      double height =
+          BlocProvider.of<SliderBloc>(context).state.floorToDouble();
       DateTime timestamp = DateTime.now();
 
       // Save the data
-      // Add the started weight
+      // Add the initial weight
       BlocProvider.of<WeightDBBloc>(context)
         ..add(
           WeightDBAdded(
             WeightData(
               null,
-              weight: _weightValue,
+              weight: _metricUnits
+                  ? _weightValue
+                  : UnitConverter.lbsToKg(_weightValue),
               date: timestamp,
             ),
           ),
         );
 
+      // We need to keep consistency in the database, so we always keep it in metric units
+      // So, we need to evaluate before saving
       BlocProvider.of<UserPreferencesBloc>(context)
         ..add(
           UserPreferencesAddPreferences(
@@ -258,9 +264,14 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
               name: _nameValue,
               lastName: _lastNameValue,
               height: height,
-              initialWeight: _weightValue,
-              goalWeight: _goalWeightValue,
+              initialWeight: _metricUnits
+                  ? _weightValue
+                  : UnitConverter.lbsToKg(_weightValue),
+              goalWeight: _metricUnits
+                  ? _goalWeightValue
+                  : UnitConverter.lbsToKg(_goalWeightValue),
               initialDate: timestamp,
+              units: _metricUnits ? Unit.Metric : Unit.Imperial,
             ),
           ),
         );

@@ -26,8 +26,13 @@ class RouteGenerator {
           case AddWeightScreen.routeName:
             return _addWeightScreenHandler(settings.arguments);
           case ConfigurationScreen.routeName:
-            final UserData prefs = settings.arguments as UserData;
-            return ConfigurationScreen(prefs: prefs);
+            if (settings.arguments is UserData) {
+              return ConfigurationScreen(
+                lastConfiguration: settings.arguments,
+              );
+            }
+
+            return _errorRoute('Illegal argumets for route ConfigurationScreen'); 
           case HistoryScreen.routeName:
             return HistoryScreen();
           case ProgressionScreen.routeName:

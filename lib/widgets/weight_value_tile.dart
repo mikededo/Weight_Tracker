@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
+import 'package:weight_tracker/util/util.dart';
 
 import '../data/blocs/weight_counter_bloc/weight_counter_bloc.dart';
 import '../data/blocs/weight_counter_bloc/weight_counter_event.dart';
@@ -36,32 +38,33 @@ class WeightValueTile extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildAddWeightButtons(BuildContext context) {
+  List<Widget> _buildAddWeightButtons(BuildContext context, String unitsText) {
+
     return [
       _addWeightButtonConfig(
         context,
-        text: '-5kg',
+        text: '-5' + unitsText,
         onTap: () => BlocProvider.of<WeightCounterBloc>(context).add(
           WeightCounterModified(-5.0),
         ),
       ),
       _addWeightButtonConfig(
         context,
-        text: '-2.5kg',
+        text: '-2.5' + unitsText,
         onTap: () => BlocProvider.of<WeightCounterBloc>(context).add(
           WeightCounterModified(-2.5),
         ),
       ),
       _addWeightButtonConfig(
         context,
-        text: '+2.5kg',
+        text: '+2.5' + unitsText,
         onTap: () => BlocProvider.of<WeightCounterBloc>(context).add(
           WeightCounterModified(2.5),
         ),
       ),
       _addWeightButtonConfig(
         context,
-        text: '+5kg',
+        text: '+5' + unitsText,
         onTap: () => BlocProvider.of<WeightCounterBloc>(context).add(
           WeightCounterModified(5.0),
         ),
@@ -81,6 +84,10 @@ class WeightValueTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Unit units =
+        BlocProvider.of<UserPreferencesBloc>(context).state.dataUnits;
+    String unitsText = units == Unit.Metric ? 'kg' : 'lb';
+
     return Column(
       children: <Widget>[
         Padding(
@@ -94,7 +101,7 @@ class WeightValueTile extends StatelessWidget {
             children: <Widget>[
               Container(
                 child: Text(
-                  'Weight [kg]',
+                  'Weight [$unitsText]',
                   style: Theme.of(context).textTheme.headline5,
                 ),
               ),
@@ -201,7 +208,7 @@ class WeightValueTile extends StatelessWidget {
           padding: const EdgeInsets.only(top: 12.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: _buildAddWeightButtons(context),
+            children: _buildAddWeightButtons(context, unitsText),
           ),
         ),
       ],

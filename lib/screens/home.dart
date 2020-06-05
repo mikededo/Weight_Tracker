@@ -73,19 +73,20 @@ class Home extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          final WeightDBBloc bloc = BlocProvider.of<WeightDBBloc>(context);
+          final WeightDBState state =
+              BlocProvider.of<WeightDBBloc>(context).state;
 
-          if (bloc.state is WeightDBLoadSuccess ||
-              bloc.state is WeightDBLoadInProgress ||
-              bloc.state is WeightDBInitial) {
+          if (state is WeightDBLoadSuccess ||
+              state is WeightDBLoadInProgress ||
+              state is WeightDBInitial) {
             Navigator.pushNamed(
               context,
               AddWeightScreen.routeName,
-              arguments: AddWeightHelper(weightData: bloc.lastWeight),
+              arguments: AddWeightHelper(
+                units: prefsState.dataUnits,
+              ),
             );
           }
-
-          bloc.close();
         },
         backgroundColor: Theme.of(context).accentColor,
         label: Padding(

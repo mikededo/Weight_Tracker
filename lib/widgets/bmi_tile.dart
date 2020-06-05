@@ -99,8 +99,8 @@ class _BMITileState extends State<BMITile> {
   }
 
   double _calculateBmiValue(double weight) {
-    int height = BlocProvider.of<UserPreferencesBloc>(context).state.height;
-    return (weight ?? 80.0) / pow(height / 100, 2);
+    double height = BlocProvider.of<UserPreferencesBloc>(context).state.rawHeight;
+    return weight / pow(height / 100, 2);
   }
 
   @override

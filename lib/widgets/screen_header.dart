@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class ScreenHeader extends StatelessWidget {
   final String text;
   final bool withCloseIcon;
+  final Function onTap;
 
-  const ScreenHeader({@required this.text, this.withCloseIcon = true})
+  const ScreenHeader({@required this.text, this.withCloseIcon = true, this.onTap})
       : assert(text != null);
 
   @override
@@ -29,7 +30,7 @@ class ScreenHeader extends StatelessWidget {
           ),
           withCloseIcon
               ? InkWell(
-                  onTap: () => Navigator.of(context).pop(),
+                  onTap: onTap ?? () => Navigator.of(context).pop(),
                   child: Icon(
                     Icons.close,
                     size: 24.0,

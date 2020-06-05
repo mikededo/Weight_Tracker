@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:weight_tracker/util/util.dart';
 
 class WeightDateTile extends StatelessWidget {
   final double weight;
   final DateTime date;
+  final Unit unit;
 
   const WeightDateTile({
     @required this.weight,
     @required this.date,
+    @required this.unit,
   });
 
   @override
@@ -15,7 +18,9 @@ class WeightDateTile extends StatelessWidget {
     return Column(
       children: <Widget>[
         Text(
-          '${weight.toStringAsFixed(1)}kg',
+          unit == Unit.Metric
+              ? UnitConverter.kgToStringRich(weight)
+              : UnitConverter.lbsToStringRich(weight),
           style: Theme.of(context).textTheme.headline5,
         ),
         SizedBox(height: 2.0),

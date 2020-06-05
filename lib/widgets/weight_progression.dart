@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/util/util.dart';
 
 import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
@@ -15,9 +16,12 @@ class WeightProgression extends StatelessWidget {
     "Don't worry! It's the beginning!",
     "Keep it going!",
     "Nearly there! One last effort!",
+    "In the middle!",
+    "You are a bit off!",
+    "You are a bit low!",
   ];
 
-  String _getProgressionText(double percentage) {
+  String _getPercentageText(double percentage) {
     if (percentage < 0.25) {
       return progressionText[0];
     } else if (percentage < 0.75) {
@@ -27,13 +31,30 @@ class WeightProgression extends StatelessWidget {
     }
   }
 
+  String _getProgressText(
+    double initialWeight,
+    double lastWeight,
+    double weightGoal,
+  ) {
+    if (weightGoal == lastWeight || initialWeight == weightGoal) {
+      return progressionText[3];
+    } else if (lastWeight > initialWeight && lastWeight > weightGoal) {
+      return progressionText[4];
+    } else if (lastWeight < initialWeight && lastWeight < weightGoal) {
+      return progressionText[5];
+    } else {
+      double res =
+          ((lastWeight - initialWeight) / (weightGoal - initialWeight)).abs();
+      return _getPercentageText(res);
+    }
+  }
+
   double _getProgressValue(
     double initialWeight,
     double lastWeight,
     double weightGoal,
   ) {
     double res;
-
     if (weightGoal == lastWeight || initialWeight == weightGoal) {
       return 1;
     } else if (lastWeight > initialWeight && lastWeight > weightGoal) {
@@ -90,7 +111,11 @@ class WeightProgression extends StatelessWidget {
                         // We know state user data is not empty
                         double percentage = _getProgressValue(
                           prefs.initialWeight,
-                          weightData.first.weight,
+                          prefs.areImperial
+                              ? UnitConverter.kgToLbs(
+                                  weightData.first.weight,
+                                )
+                              : weightData.first.weight,
                           prefs.goalWeight,
                         );
 
@@ -103,19 +128,27 @@ class WeightProgression extends StatelessWidget {
                                 WeightDateTile(
                                   weight: prefs.initialWeight,
                                   date: prefs.initialDate,
+                                  unit: prefs.dataUnits,
                                 ),
                                 RichText(
                                   text: TextSpan(
                                     children: <TextSpan>[
                                       TextSpan(
-                                        text: weightData.first.weight
-                                            .toStringAsFixed(1),
+                                        text: UnitConverter.kgLbsToString(
+                                          prefs.dataUnits == Unit.Metric
+                                              ? weightData.first.weight
+                                              : UnitConverter.kgToLbs(
+                                                  weightData.first.weight,
+                                                ),
+                                        ),
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline2,
                                       ),
                                       TextSpan(
-                                        text: 'kg',
+                                        text: prefs.dataUnits == Unit.Metric
+                                            ? 'kg'
+                                            : 'lb',
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline5,
@@ -126,13 +159,22 @@ class WeightProgression extends StatelessWidget {
                                 WeightDateTile(
                                   weight: prefs.goalWeight,
                                   date: prefs.goalDate,
+                                  unit: prefs.dataUnits,
                                 ),
                               ],
                             ),
                             Column(
                               children: <Widget>[
                                 Text(
-                                  _getProgressionText(percentage),
+                                  _getProgressText(
+                                    prefs.initialWeight,
+                                    prefs.areImperial
+                                        ? UnitConverter.kgToLbs(
+                                            weightData.first.weight,
+                                          )
+                                        : weightData.first.weight,
+                                    prefs.goalWeight,
+                                  ),
                                   style: Theme.of(context).textTheme.subtitle2,
                                 ),
                                 SizedBox(height: 8.0),
