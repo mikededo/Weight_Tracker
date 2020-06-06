@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
 import 'package:weight_tracker/data/models/add_weight_helper.dart';
+import 'package:weight_tracker/widgets/weight_db_bloc_builder.dart';
 
 import '../data/models/weight.dart';
 import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
@@ -83,46 +84,39 @@ class HistoryScreen extends StatelessWidget {
               ],
             ),
             Expanded(
-              child: BlocBuilder<WeightDBBloc, WeightDBState>(
-                builder: (context, state) {
-                  if (state is WeightDBLoadInProgress ||
-                      state is WeightDBInitial) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (state is WeightDBLoadSuccess) {
-                    /// Data already sorted
-                    List<WeightData> list = state.weightCollection;
+              child: WeightDBBlocBuilder(
+                onLoaded: (state) {
+                  /// Data already sorted
+                  List<WeightData> list = state.weightCollection;
 
-                    if (list.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'Start adding \na weight!',
-                          style: Theme.of(context).textTheme.bodyText1,
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    } else {
-                      return ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        itemBuilder: (_, index) {
-                          if (index == list.length - 1) {
-                            return HistoryTile(
-                              weightData: list[index],
-                              prevWeightData: null,
-                              extended: true,
-                            );
-                          } else {
-                            return HistoryTile(
-                              weightData: list[index],
-                              prevWeightData: list[index + 1],
-                              extended: true,
-                            );
-                          }
-                        },
-                        itemCount: list.length,
-                      );
-                    }
+                  if (list.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'Start adding \na weight!',
+                        style: Theme.of(context).textTheme.bodyText1,
+                        textAlign: TextAlign.center,
+                      ),
+                    );
                   } else {
-                    return Center(child: Text('Failed loading data'));
+                    return ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      itemBuilder: (_, index) {
+                        if (index == list.length - 1) {
+                          return HistoryTile(
+                            weightData: list[index],
+                            prevWeightData: null,
+                            extended: true,
+                          );
+                        } else {
+                          return HistoryTile(
+                            weightData: list[index],
+                            prevWeightData: list[index + 1],
+                            extended: true,
+                          );
+                        }
+                      },
+                      itemCount: list.length,
+                    );
                   }
                 },
               ),
@@ -132,7 +126,8 @@ class HistoryScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          final WeightDBState state = BlocProvider.of<WeightDBBloc>(context).state;
+          final WeightDBState state =
+              BlocProvider.of<WeightDBBloc>(context).state;
 
           if (state is WeightDBLoadSuccess ||
               state is WeightDBLoadInProgress ||

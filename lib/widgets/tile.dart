@@ -5,12 +5,14 @@ class Tile extends StatelessWidget {
   final double height;
   final EdgeInsets margin;
   final EdgeInsets padding;
+  final bool hasBackground;
 
   Tile({
     @required this.child,
     this.height,
     this.margin,
     this.padding,
+    this.hasBackground = true,
   });
 
   @override
@@ -25,7 +27,9 @@ class Tile extends StatelessWidget {
       height: height ?? null,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColorLight,
+        color: hasBackground
+            ? Theme.of(context).primaryColorLight
+            : Colors.transparent,
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: child,

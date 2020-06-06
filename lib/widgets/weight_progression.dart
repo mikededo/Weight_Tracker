@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weight_tracker/util/util.dart';
+import 'package:weight_tracker/widgets/weight_db_bloc_builder.dart';
 
 import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
-import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../data/models/user_data.dart';
 import '../data/models/weight.dart';
 import '../screens/progression_screen.dart';
@@ -87,108 +87,98 @@ class WeightProgression extends StatelessWidget {
             ),
             child: Tile(
               height: MediaQuery.of(context).size.height * 0.15,
-              child: BlocBuilder<WeightDBBloc, WeightDBState>(
-                builder: (context, state) {
-                  if (state is WeightDBLoadInProgress ||
-                      state is WeightDBInitial) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (state is WeightDBLoadSuccess) {
-                    if (state.weightCollection.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'Add a weight to check your progress!',
-                          style: Theme.of(context).textTheme.bodyText1,
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    }
-
-                    // Weight collection from state is not empty
-                    final List<WeightData> weightData = state.weightCollection;
-
-                    return BlocBuilder<UserPreferencesBloc, UserData>(
-                      builder: (context, UserData prefs) {
-                        // We know state user data is not empty
-                        double percentage = _getProgressValue(
-                          prefs.initialWeight,
-                          prefs.areImperial
-                              ? UnitConverter.kgToLbs(
-                                  weightData.first.weight,
-                                )
-                              : weightData.first.weight,
-                          prefs.goalWeight,
-                        );
-
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                WeightDateTile(
-                                  weight: prefs.initialWeight,
-                                  date: prefs.initialDate,
-                                  unit: prefs.dataUnits,
-                                ),
-                                RichText(
-                                  text: TextSpan(
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                        text: UnitConverter.kgLbsToString(
-                                          prefs.dataUnits == Unit.Metric
-                                              ? weightData.first.weight
-                                              : UnitConverter.kgToLbs(
-                                                  weightData.first.weight,
-                                                ),
-                                        ),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline2,
-                                      ),
-                                      TextSpan(
-                                        text: prefs.dataUnits == Unit.Metric
-                                            ? 'kg'
-                                            : 'lb',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                WeightDateTile(
-                                  weight: prefs.goalWeight,
-                                  date: prefs.goalDate,
-                                  unit: prefs.dataUnits,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: <Widget>[
-                                Text(
-                                  _getProgressText(
-                                    prefs.initialWeight,
-                                    prefs.areImperial
-                                        ? UnitConverter.kgToLbs(
-                                            weightData.first.weight,
-                                          )
-                                        : weightData.first.weight,
-                                    prefs.goalWeight,
-                                  ),
-                                  style: Theme.of(context).textTheme.subtitle2,
-                                ),
-                                SizedBox(height: 8.0),
-                                ColoredProgressBar(percentage),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
+              child: WeightDBBlocBuilder(
+                onLoaded: (state) {
+                  if (state.weightCollection.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'Add a weight to check your progress!',
+                        style: Theme.of(context).textTheme.bodyText1,
+                        textAlign: TextAlign.center,
+                      ),
                     );
-                  } else {
-                    // WeightBDLoadFailure
-                    return Center(child: Text('Error loading data'));
                   }
+
+                  // Weight collection from state is not empty
+                  final List<WeightData> weightData = state.weightCollection;
+
+                  return BlocBuilder<UserPreferencesBloc, UserData>(
+                    builder: (context, UserData prefs) {
+                      // We know state user data is not empty
+                      double percentage = _getProgressValue(
+                        prefs.initialWeight,
+                        prefs.areImperial
+                            ? UnitConverter.kgToLbs(
+                                weightData.first.weight,
+                              )
+                            : weightData.first.weight,
+                        prefs.goalWeight,
+                      );
+
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              WeightDateTile(
+                                weight: prefs.initialWeight,
+                                date: prefs.initialDate,
+                                unit: prefs.dataUnits,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                      text: UnitConverter.kgLbsToString(
+                                        prefs.dataUnits == Unit.Metric
+                                            ? weightData.first.weight
+                                            : UnitConverter.kgToLbs(
+                                                weightData.first.weight,
+                                              ),
+                                      ),
+                                      style:
+                                          Theme.of(context).textTheme.headline2,
+                                    ),
+                                    TextSpan(
+                                      text: prefs.dataUnits == Unit.Metric
+                                          ? 'kg'
+                                          : 'lb',
+                                      style:
+                                          Theme.of(context).textTheme.headline5,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              WeightDateTile(
+                                weight: prefs.goalWeight,
+                                date: prefs.goalDate,
+                                unit: prefs.dataUnits,
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Text(
+                                _getProgressText(
+                                  prefs.initialWeight,
+                                  prefs.areImperial
+                                      ? UnitConverter.kgToLbs(
+                                          weightData.first.weight,
+                                        )
+                                      : weightData.first.weight,
+                                  prefs.goalWeight,
+                                ),
+                                style: Theme.of(context).textTheme.subtitle2,
+                              ),
+                              SizedBox(height: 8.0),
+                              ColoredProgressBar(percentage),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
               ),
             ),

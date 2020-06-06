@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/widgets/weight_db_bloc_builder.dart';
 
 import '../data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
-import '../data/blocs/weight_db_bloc/weight_db_bloc.dart';
 import '../data/models/user_data.dart';
 import '../widgets/tile.dart';
 
@@ -99,7 +99,8 @@ class _BMITileState extends State<BMITile> {
   }
 
   double _calculateBmiValue(double weight) {
-    double height = BlocProvider.of<UserPreferencesBloc>(context).state.rawHeight;
+    double height =
+        BlocProvider.of<UserPreferencesBloc>(context).state.rawHeight;
     return weight / pow(height / 100, 2);
   }
 
@@ -118,62 +119,51 @@ class _BMITileState extends State<BMITile> {
           ),
           Tile(
             height: MediaQuery.of(context).size.height * 0.15,
-            child: BlocBuilder<WeightDBBloc, WeightDBState>(
-              builder: (context, state) {
-                if (state is WeightDBLoadInProgress ||
-                    state is WeightDBInitial) {
+            child: WeightDBBlocBuilder(
+              onLoaded: (state) {
+                if (state.weightCollection.isEmpty) {
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: Text(
+                      'The BMI will be calculated once\nyou add a weight!',
+                      style: Theme.of(context).textTheme.bodyText1,
+                      textAlign: TextAlign.center,
+                    ),
                   );
-                } else if (state is WeightDBLoadSuccess) {
-                  if (state.weightCollection.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'The BMI will be calculated once\nyou add a weight!',
-                        style: Theme.of(context).textTheme.bodyText1,
-                        textAlign: TextAlign.center,
-                      ),
-                    );
-                  } else {
-                    double latestWeight = state.weightCollection.first.weight;
+                } else {
+                  double latestWeight = state.weightCollection.first.weight;
 
-                    return BlocBuilder<UserPreferencesBloc, UserData>(
-                      builder: (context, state) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            RichText(
-                              text: TextSpan(
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: _loadBMI(
-                                      _calculateBmiValue(latestWeight),
-                                    ),
-                                    style:
-                                        Theme.of(context).textTheme.headline3,
-                                  ),
-                                  TextSpan(text: '  '),
-                                  _buildBMIResults(
+                  return BlocBuilder<UserPreferencesBloc, UserData>(
+                    builder: (context, state) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          RichText(
+                            text: TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: _loadBMI(
                                     _calculateBmiValue(latestWeight),
                                   ),
-                                ],
-                              ),
+                                  style: Theme.of(context).textTheme.headline3,
+                                ),
+                                TextSpan(text: '  '),
+                                _buildBMIResults(
+                                  _calculateBmiValue(latestWeight),
+                                ),
+                              ],
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: _buildBars(
-                                _calculateBmiValue(latestWeight),
-                              ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: _buildBars(
+                              _calculateBmiValue(latestWeight),
                             ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                } else {
-                  // WeightDBLoadFailed
-                  return Center(child: Text('Error loading data'));
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 }
               },
             ),
