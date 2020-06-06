@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weight_tracker/data/models/weight.dart';
 import 'package:weight_tracker/widgets/tile.dart';
 import 'package:weight_tracker/widgets/weight_db_bloc_builder.dart';
+import 'package:weight_tracker/widgets/weight_line_chart.dart';
 
 import '../widgets/default_page_layout.dart';
 import '../widgets/screen_header.dart';
@@ -34,7 +35,8 @@ class ProgressionScreen extends StatelessWidget {
     int count = 0;
 
     for (WeightData data in items) {
-      if (data.date.difference(lastDate).inDays > 0 && data.date.isAfter(lastDate)) {
+      if (data.date.difference(lastDate).inDays > 0 &&
+          data.date.isAfter(lastDate)) {
         break;
       }
 
@@ -96,6 +98,9 @@ class ProgressionScreen extends StatelessWidget {
                 },
               ),
             ),
+            Tile(
+              child: WeightLineChart(),
+            )
           ],
         ),
       ),

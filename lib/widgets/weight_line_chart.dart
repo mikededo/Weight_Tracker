@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:weight_tracker/data/models/weight.dart';
+import 'package:weight_tracker/widgets/weight_db_bloc_builder.dart';
 
 import '../data.dart';
 
@@ -9,7 +11,8 @@ class WeightLineChart extends StatelessWidget {
     const Color(0xff02d39a),
   ];
 
-  LineChartData _buildChartData() {
+  LineChartData _buildChartData(ChartData chartData) {
+    // Recap list information
     return LineChartData(
       lineTouchData: LineTouchData(
         touchTooltipData: LineTouchTooltipData(
@@ -49,8 +52,8 @@ class WeightLineChart extends StatelessWidget {
             fontSize: 12.0,
           ),
           getTitles: (value) {
-            if (value == Data.minWeight().floorToDouble() - 1) {
-              return '${Data.minWeight().floorToDouble().toInt()} kg';
+            if (value == chartData.minWeight.second.floor() - 1) {
+              return '${chartData.minWeight.second.floor()} kg';
             } else if (value == Data.maxWeight().floorToDouble() + 1) {
               return '${Data.maxWeight().floorToDouble().toInt()} kg';
             }
@@ -68,24 +71,26 @@ class WeightLineChart extends StatelessWidget {
           ),
         ),
       ),
-      minX: Data.minMonth,
-      maxX: Data.maxMonth,
-      minY: Data.minWeight().floorToDouble() - 2,
-      maxY: Data.maxWeight().floorToDouble() + 2,
-      lineBarsData: _weightData(),
+      minX: chartData.firstDate.month.floorToDouble() - 5,
+      maxX: chartData.lastDate.month.floorToDouble(),
+      minY: chartData.minWeight.second - chartData.minMaxDiff,
+      maxY: chartData.maxWeight.second + chartData.minMaxDiff,
+      lineBarsData: _weightData(chartData),
     );
   }
 
-  List<LineChartBarData> _weightData() {
-    List<FlSpot> _list = [];
-    for (int i = 0; i < Data.length; i++) {
-      _list.add(
-        FlSpot(Data.pairOf(i).second, Data.pairOf(i).first),
-      );
-    }
+  List<LineChartBarData> _weightData(ChartData chartData) {
+    List<FlSpot> _list = chartData.dataAsPairs
+        .map(
+          (pair) => FlSpot(
+            pair.first,
+            pair.second,
+          ),
+        )
+        .toList();
 
     final LineChartBarData weightData = LineChartBarData(
-      spots: _list,
+      spots: _list.sublist(0, 7),
       isCurved: true,
       colors: gradientColors,
       barWidth: 4,
@@ -106,9 +111,13 @@ class WeightLineChart extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height * 0.2,
       width: double.infinity,
-      child: LineChart(
-        _buildChartData(),
-        swapAnimationDuration: const Duration(milliseconds: 250),
+      child: WeightDBBlocBuilder(
+        onLoaded: (state) {
+          return LineChart(
+            _buildChartData(ChartData(state.weightCollection)),
+            swapAnimationDuration: const Duration(milliseconds: 250),
+          );
+        },
       ),
     );
   }
