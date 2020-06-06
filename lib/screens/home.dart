@@ -19,88 +19,86 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserData prefsState = BlocProvider.of<UserPreferencesBloc>(context).state;
-
-    return Scaffold(
-      body: DefaultPageLayout(
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * 0.075,
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Wrap(
-                    spacing: 8.0,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        FontAwesome.user_circle,
+    return BlocBuilder<UserPreferencesBloc, UserData>(
+      builder: (_, UserData prefsState) => Scaffold(
+        body: DefaultPageLayout(
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height * 0.075,
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Wrap(
+                      spacing: 8.0,
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          FontAwesome.user_circle,
+                          size: 28.0,
+                          color: Colors.white,
+                        ),
+                        Text(
+                          'Hello, ${prefsState.name}!',
+                          style: Theme.of(context).textTheme.bodyText1,
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.settings,
                         size: 28.0,
                         color: Colors.white,
                       ),
-                      Text(
-                        'Hello, ${prefsState.name}!',
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.settings,
-                      size: 28.0,
-                      color: Colors.white,
-                    ),
-                    onPressed: () async {
-                      Navigator.of(context).pushNamed(
-                        ConfigurationScreen.routeName,
-                        arguments: prefsState,
-                      );
-                    },
-                  )
-                ],
+                      onPressed: () async {
+                        Navigator.of(context).pushNamed(
+                          ConfigurationScreen.routeName,
+                          arguments: prefsState,
+                        );
+                      },
+                    )
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 12.0),
-            WeightProgression(),
-            SizedBox(height: 12.0),
-            BMITile(),
-            SizedBox(height: 12.0),
-            WeightHistory(),
-          ],
+              SizedBox(height: 12.0),
+              WeightProgression(),
+              SizedBox(height: 12.0),
+              BMITile(),
+              SizedBox(height: 12.0),
+              WeightHistory(),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          final WeightDBState state =
-              BlocProvider.of<WeightDBBloc>(context).state;
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            final WeightDBState state =
+                BlocProvider.of<WeightDBBloc>(context).state;
 
-          if (state is WeightDBLoadSuccess ||
-              state is WeightDBLoadInProgress ||
-              state is WeightDBInitial) {
-            Navigator.pushNamed(
-              context,
-              AddWeightScreen.routeName,
-              arguments: AddWeightHelper(
-                units: prefsState.dataUnits,
+            if (!(state is WeightDBLoadFailure)) {
+              Navigator.pushNamed(
+                context,
+                AddWeightScreen.routeName,
+                arguments: AddWeightHelper(
+                  units: prefsState.dataUnits,
+                ),
+              );
+            }
+          },
+          backgroundColor: Theme.of(context).accentColor,
+          label: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: Text(
+              'NEW WEIGHT',
+              style: GoogleFonts.workSans().copyWith(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                fontWeight: FontWeight.w900,
               ),
-            );
-          }
-        },
-        backgroundColor: Theme.of(context).accentColor,
-        label: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Text(
-            'NEW WEIGHT',
-            style: GoogleFonts.workSans().copyWith(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              fontWeight: FontWeight.w900,
             ),
           ),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
