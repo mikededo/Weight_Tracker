@@ -55,4 +55,7 @@ class UnitConverter {
 
   static double doubleToFixedDecimals(double value, int decimals) =>
       double.parse(value.toStringAsFixed(decimals));
+
+  static DateTime dateFromDateTime(DateTime val) =>
+      DateTime(val.year, val.month, val.day);
 }

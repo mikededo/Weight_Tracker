@@ -77,7 +77,7 @@ class _AddWeightScreenState extends State<AddWeightScreen> {
       WeightData wd = WeightData(
         widget.helper.weightData == null ? null : widget.helper.weightData.id,
         weight: weight,
-        date: _selectedDate,
+        date: UnitConverter.dateFromDateTime(_selectedDate),
       );
       BlocProvider.of<WeightDBBloc>(context).add(
         widget.helper.weightData == null

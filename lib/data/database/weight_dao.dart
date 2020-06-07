@@ -29,10 +29,29 @@ class WeightDao {
   Future<void> addWeight(WeightData wd) async {
     Database db = await _database.db;
 
-    await db.insert(
-      WeightData.W_TABLE_NAME,
-      wd.toMap(),
+    List<Map<String, dynamic>> res = await db.rawQuery(
+      """
+        SELECT *
+        FROM ${WeightData.W_TABLE_NAME}
+        WHERE ${WeightData.W_COL_DATE}=?
+      """,
+      [wd.date.toIso8601String()],
     );
+
+    // We ensure that each day is not repeated along the app
+    // There's no point on having multiple weights the same day
+    if (res.isNotEmpty) {
+      await updateWeight(
+        wd.copyWith(
+          id: res.first[WeightData.W_COL_ID].toString(),
+        ),
+      );
+    } else {
+      await db.insert(
+        WeightData.W_TABLE_NAME,
+        wd.toMap(),
+      );
+    }
   }
 
   Future<void> updateWeight(WeightData wd) async {
