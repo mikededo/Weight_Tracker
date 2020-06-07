@@ -64,26 +64,6 @@ class WeightDBBloc extends Bloc<WeightDBEvent, WeightDBState> {
   }
 
   Stream<WeightDBState> _mapAddedDataToState(WeightDBAdded event) async* {
-    /* if (state is WeightDBLoadSuccess) {
-      // Search its position
-      int index = (state as WeightDBLoadSuccess)
-          .weightCollection
-          .indexWhere((weight) => event.data.date.isAfter(weight.date));
-
-      // Update in the cached memory
-      if (index == -1) {
-        updatedData = List.from(
-          (state as WeightDBLoadSuccess).weightCollection,
-        )..add(event.data);
-      } else {
-        updatedData = List.from(
-          (state as WeightDBLoadSuccess).weightCollection,
-        )..insert(index == -1 ? 0 : index, event.data);
-      }
-    } else if (state is WeightDBInitial) {
-      updatedData = List<WeightData>()..add(event.data);
-    } */
-
     // Add in the db
     await this._repository.addWeight(event.data);
     yield* _mapLoadedDataToState();

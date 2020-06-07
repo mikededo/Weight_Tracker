@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
 import 'package:weight_tracker/data/models/weight.dart';
+import 'package:weight_tracker/util/util.dart';
 import 'package:weight_tracker/widgets/weight_db_bloc_builder.dart';
 
 import '../data.dart';
+import '../data/models/chart_data_controller.dart';
 
 class WeightLineChart extends StatelessWidget {
   final List<Color> gradientColors = [
@@ -11,9 +14,25 @@ class WeightLineChart extends StatelessWidget {
     const Color(0xff02d39a),
   ];
 
-  LineChartData _buildChartData(ChartData chartData) {
+  LineChartData _buildChartData(ChartDataController dataController) {
     // Recap list information
     return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: Colors.white24,
+            strokeWidth: .5,
+          );
+        },
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: Colors.white24,
+            strokeWidth: .5,
+          );
+        },
+      ),
       lineTouchData: LineTouchData(
         touchTooltipData: LineTouchTooltipData(
           tooltipBgColor: Colors.blueGrey.withOpacity(0.8),
@@ -21,28 +40,23 @@ class WeightLineChart extends StatelessWidget {
         touchCallback: (LineTouchResponse touchResponse) {},
         handleBuiltInTouches: true,
       ),
-      gridData: FlGridData(
-        show: false,
-      ),
       titlesData: FlTitlesData(
         bottomTitles: SideTitles(
+          reservedSize: 12.0,
           showTitles: true,
           textStyle: const TextStyle(
             color: Color(0xff72719b),
-            fontSize: 14,
+            fontSize: 12.0,
           ),
           getTitles: (value) {
-            switch (value.toInt()) {
-              case 1:
-                return '1';
-              case 4:
-                return '4';
-              case 8:
-                return '8';
-              case 12:
-                return '12';
-            }
-            return '';
+            // Calculate value's day
+            DateTime timestamp = DateTime.now().subtract(
+              Duration(
+                days: (dataController.length - value).floor(),
+              ),
+            );
+
+            return DateFormat('d/M').format(timestamp);
           },
         ),
         leftTitles: SideTitles(
@@ -51,36 +65,36 @@ class WeightLineChart extends StatelessWidget {
             color: Color(0xff5a646e),
             fontSize: 12.0,
           ),
+          interval: dataController.minMaxDiff * 2,
           getTitles: (value) {
-            if (value == chartData.minWeight.second.floor() - 1) {
-              return '${chartData.minWeight.second.floor()} kg';
-            } else if (value == Data.maxWeight().floorToDouble() + 1) {
-              return '${Data.maxWeight().floorToDouble().toInt()} kg';
-            }
-            return '';
+            return value.toStringAsFixed(1);
           },
-          reservedSize: 32.0,
+          reservedSize: 24.0,
         ),
       ),
       borderData: FlBorderData(
         show: true,
-        border: Border(
-          left: BorderSide(
-            color: const Color(0xff37434d),
-            width: 1,
-          ),
+        border: Border.all(
+          color: const Color(0xff5a646e),
+          width: 1,
         ),
       ),
-      minX: chartData.firstDate.month.floorToDouble() - 5,
-      maxX: chartData.lastDate.month.floorToDouble(),
-      minY: chartData.minWeight.second - chartData.minMaxDiff,
-      maxY: chartData.maxWeight.second + chartData.minMaxDiff,
-      lineBarsData: _weightData(chartData),
+      minX: dataController.firstDate.month.floorToDouble() - 5,
+      maxX: dataController.lastDate.month.floorToDouble(),
+      minY: UnitConverter.doubleToFixedDecimals(
+        dataController.minWeight.second - dataController.minMaxDiff,
+        1,
+      ),
+      maxY: UnitConverter.doubleToFixedDecimals(
+        dataController.maxWeight.second + dataController.minMaxDiff,
+        1,
+      ),
+      lineBarsData: _weightData(dataController),
     );
   }
 
-  List<LineChartBarData> _weightData(ChartData chartData) {
-    List<FlSpot> _list = chartData.dataAsPairs
+  List<LineChartBarData> _weightData(ChartDataController chartData) {
+    List<FlSpot> _list = chartData.lastSevenDays
         .map(
           (pair) => FlSpot(
             pair.first,
@@ -114,7 +128,7 @@ class WeightLineChart extends StatelessWidget {
       child: WeightDBBlocBuilder(
         onLoaded: (state) {
           return LineChart(
-            _buildChartData(ChartData(state.weightCollection)),
+            _buildChartData(ChartDataController(state.weightCollection)),
             swapAnimationDuration: const Duration(milliseconds: 250),
           );
         },

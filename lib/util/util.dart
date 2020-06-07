@@ -52,4 +52,7 @@ class UnitConverter {
   }
 
   static String cmToString(double val) => val.toStringAsFixed(0) + 'cm';
+
+  static double doubleToFixedDecimals(double value, int decimals) =>
+      double.parse(value.toStringAsFixed(decimals));
 }
