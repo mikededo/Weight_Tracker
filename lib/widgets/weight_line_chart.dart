@@ -17,6 +17,7 @@ class WeightLineChart extends StatelessWidget {
     print(dataController.lastSevenDaysLastDate.month.floorToDouble());
     // Recap list information
     return LineChartData(
+      clipToBorder: true,
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -105,16 +106,17 @@ class WeightLineChart extends StatelessWidget {
 
     final LineChartBarData weightData = LineChartBarData(
       spots: _list,
-      isCurved: true,
+      isCurved: false,
       colors: gradientColors,
-      barWidth: 4,
+      barWidth: 2,
       isStrokeCapRound: true,
       dotData: FlDotData(
-        show: false,
+        show: true,
+        dotSize: 3.0,
       ),
       belowBarData: BarAreaData(
         show: true,
-        colors: gradientColors.map((color) => color.withOpacity(0.3)).toList(),
+        colors: gradientColors.map((color) => color.withOpacity(0.15)).toList(),
       ),
     );
     return [weightData];

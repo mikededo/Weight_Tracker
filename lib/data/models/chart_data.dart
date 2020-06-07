@@ -113,16 +113,12 @@ class ChartData {
       (_lastSevenDaysMaxWeight.second - _lastSevenDaysMinWeight.second) / 2;
 
   /// Returns a date of one week earlier with time as [00:00:0000]
-  DateTime get lastSevenDaysFirstDate {
-    DateTime temp = DateTime.now().subtract(Duration(days: 6));
-    return DateTime(temp.year, temp.month, temp.day);
-  }
+  DateTime get lastSevenDaysFirstDate => UnitConverter.dateFromDateTime(
+      DateTime.now().subtract(Duration(days: 6)));
 
   /// Returns the current date with time as [00:00:0000]
-  DateTime get lastSevenDaysLastDate {
-    DateTime temp = DateTime.now();
-    return DateTime(temp.year, temp.month, temp.day);
-  }
+  DateTime get lastSevenDaysLastDate =>
+      UnitConverter.dateFromDateTime(DateTime.now());
 
   //! DATA INIT
   /// Returns the entire list data as pair of weight and their index
@@ -194,40 +190,26 @@ class ChartData {
     int end = _data.length > 7 ? 7 : _data.length;
     DateTime timestamp = lastSevenDaysLastDate;
 
-    int listHits = 0;
+    // Iterate for 7 days
+
     for (int i = 0; i < end; i++) {
       DateTime temp = timestamp.subtract(Duration(days: i));
-
-      int hit = -1;
-      for (int j = listHits; j < _data.length; j++) {
-        if (!_data[j].date.isBefore(temp)) {
-          hit = j;
-          break;
-        }
-      }
-
-      if (hit == -1) {
+      double weight;
+      if (_dataMap.containsKey(temp)) {
         res.add(
           Pair<double, double>(
-            first: (end - i).floorToDouble(),
-            second: null,
-          ),
-        );
-      } else {
-        res.add(
-          Pair<double, double>(
-            first: (end - i).floorToDouble(),
+            first: (end - i - 1).floorToDouble(),
             second: UnitConverter.doubleToFixedDecimals(
-              _data[i].weight,
-              1,
+              _dataMap[temp].weight,
+              2,
             ),
           ),
         );
-        listHits++;
       }
     }
-
-    print(res);
+    for (int i = 0; i < res.length; i++) {
+      print(res[i]);
+    }
 
     return res;
   }
