@@ -1,10 +1,15 @@
+import 'dart:collection';
+
 import 'package:weight_tracker/data/models/weight.dart';
 import 'package:weight_tracker/util/pair.dart';
 import 'package:weight_tracker/util/util.dart';
 
 class ChartData {
-  /// Holds the weight data
+  /// Holds the data in a list
   List<WeightData> _data;
+
+  /// Holds the weight data sorted by date
+  Map<DateTime, WeightData> _dataMap;
 
   /// Entire data as chart data
   List<Pair<double, double>> _allTimeData;
@@ -25,7 +30,25 @@ class ChartData {
   Pair<int, double> _lastSevenDaysMinWeight;
 
   /// [data] Weight data
-  ChartData(this._data) : assert(_data != null);
+  ChartData(List<WeightData> data) {
+    // Check nullability
+    assert(data != null);
+
+    // Add it to data
+    _data = data;
+
+    // Sort the data by days (closer first)
+    _dataMap = SplayTreeMap<DateTime, WeightData>(
+      (da, db) => db.compareTo(da),
+    );
+
+    for (int i = 0; i < data.length; i++) {
+      _dataMap.putIfAbsent(
+        data[i].date,
+        () => data[i],
+      );
+    }
+  }
 
   //! DATA LOADERS
   /// Calculates all the data needed to display the entire data to the chart
@@ -50,7 +73,7 @@ class ChartData {
 
   //! GENERAL DATA GETTERS
   /// Returns entire data length
-  int get length => _data.length;
+  int get length => _dataMap.keys.length;
 
   /// Returns the data of the entire list parsed for the graph
   List<Pair<double, double>> get allTimeData => _allTimeData;
@@ -91,7 +114,7 @@ class ChartData {
 
   /// Returns a date of one week earlier with time as [00:00:0000]
   DateTime get lastSevenDaysFirstDate {
-    DateTime temp = DateTime.now().subtract(Duration(days: 7));
+    DateTime temp = DateTime.now().subtract(Duration(days: 6));
     return DateTime(temp.year, temp.month, temp.day);
   }
 
@@ -168,27 +191,44 @@ class ChartData {
   List<Pair<double, double>> _calculateLastSevenDays() {
     List<Pair<double, double>> res = [];
 
-    double lastWeight;
     int end = _data.length > 7 ? 7 : _data.length;
+    DateTime timestamp = lastSevenDaysLastDate;
+
+    int listHits = 0;
     for (int i = 0; i < end; i++) {
-      DateTime timestamp = lastSevenDaysFirstDate;
-      if (_data[i].date.isAfter(timestamp)) {
-        lastWeight = UnitConverter.doubleToFixedDecimals(_data[i].weight, 1);
+      DateTime temp = timestamp.subtract(Duration(days: i));
+
+      int hit = -1;
+      for (int j = listHits; j < _data.length; j++) {
+        if (!_data[j].date.isBefore(temp)) {
+          hit = j;
+          break;
+        }
+      }
+
+      if (hit == -1) {
         res.add(
           Pair<double, double>(
-            first: (end - i - 1).floorToDouble(),
-            second: UnitConverter.doubleToFixedDecimals(_data[i].weight, 1),
+            first: (end - i).floorToDouble(),
+            second: null,
           ),
         );
       } else {
         res.add(
           Pair<double, double>(
-            first: i.floorToDouble(),
-            second: lastWeight,
+            first: (end - i).floorToDouble(),
+            second: UnitConverter.doubleToFixedDecimals(
+              _data[i].weight,
+              1,
+            ),
           ),
         );
+        listHits++;
       }
     }
+
+    print(res);
+
     return res;
   }
 
@@ -203,9 +243,11 @@ class ChartData {
     double max = double.negativeInfinity;
     int index = 0;
     for (int i = 0; i < data.length; i++) {
-      if (data[i].second > max) {
-        max = data[i].second;
-        index = i;
+      if (data[i].second != null) {
+        if (data[i].second > max) {
+          max = data[i].second;
+          index = i;
+        }
       }
     }
 
@@ -226,9 +268,11 @@ class ChartData {
     double min = double.infinity;
     int index = 0;
     for (int i = 0; i < data.length; i++) {
-      if (data[i].second < min) {
-        min = data[i].second;
-        index = i;
+      if (data[i].second != null) {
+        if (data[i].second < min) {
+          min = data[i].second;
+          index = i;
+        }
       }
     }
 

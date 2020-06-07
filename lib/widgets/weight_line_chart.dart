@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
-import 'package:weight_tracker/data/models/weight.dart';
 import 'package:weight_tracker/util/util.dart';
 import 'package:weight_tracker/widgets/weight_db_bloc_builder.dart';
 
-import '../data.dart';
 import '../data/models/chart_data_controller.dart';
 
 class WeightLineChart extends StatelessWidget {
@@ -15,6 +13,8 @@ class WeightLineChart extends StatelessWidget {
   ];
 
   LineChartData _buildChartData(ChartDataController dataController) {
+    print(dataController.lastSevenDaysFirstDate.month.floorToDouble());
+    print(dataController.lastSevenDaysLastDate.month.floorToDouble());
     // Recap list information
     return LineChartData(
       gridData: FlGridData(
@@ -50,9 +50,9 @@ class WeightLineChart extends StatelessWidget {
           ),
           getTitles: (value) {
             // Calculate value's day
-            DateTime timestamp = DateTime.now().subtract(
+            DateTime timestamp = dataController.lastSevenDaysLastDate.subtract(
               Duration(
-                days: (dataController.length - value).floor(),
+                days: (6 - value).floor(),
               ),
             );
 
@@ -79,8 +79,8 @@ class WeightLineChart extends StatelessWidget {
           width: 1,
         ),
       ),
-      minX: dataController.firstDate.month.floorToDouble() - 5,
-      maxX: dataController.lastDate.month.floorToDouble(),
+      minX: 0,
+      maxX: 6,
       minY: UnitConverter.doubleToFixedDecimals(
         dataController.minWeight.second - dataController.minMaxDiff,
         1,
@@ -93,8 +93,8 @@ class WeightLineChart extends StatelessWidget {
     );
   }
 
-  List<LineChartBarData> _weightData(ChartDataController chartData) {
-    List<FlSpot> _list = chartData.lastSevenDays
+  List<LineChartBarData> _weightData(ChartDataController dataController) {
+    List<FlSpot> _list = dataController.lastSevenDays
         .map(
           (pair) => FlSpot(
             pair.first,
@@ -104,7 +104,7 @@ class WeightLineChart extends StatelessWidget {
         .toList();
 
     final LineChartBarData weightData = LineChartBarData(
-      spots: _list.sublist(0, 7),
+      spots: _list,
       isCurved: true,
       colors: gradientColors,
       barWidth: 4,

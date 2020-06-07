@@ -71,48 +71,31 @@ class WeightDBBloc extends Bloc<WeightDBEvent, WeightDBState> {
 
   Stream<WeightDBState> _mapUpdatedDataToState(WeightDBUpdated event) async* {
     if (state is WeightDBLoadSuccess) {
-      // Update weight in the cached memory
-      final List<WeightData> updatedData = (state as WeightDBLoadSuccess)
-          .weightCollection
-          .map((weight) => weight.id == event.data.id ? event.data : weight)
-          .toList();
-
-      // Re-order list
-      updatedData.sort((wa, wb) => wb.date.compareTo(wa.date));
-
-      yield WeightDBLoadSuccess(updatedData);
-
       // Add in the DB
-      this._repository.updateWeight(event.data);
+      await this._repository.updateWeight(event.data);
+      yield* _mapLoadedDataToState();
     }
   }
 
   Stream<WeightDBState> _mapDeletedDataToState(WeightDBDeleted event) async* {
     if (state is WeightDBLoadSuccess) {
-      // Delete weight in the cached memory
-      final List<WeightData> updatedData = (state as WeightDBLoadSuccess)
-          .weightCollection
-          .where((weight) => weight.id != event.data.id)
-          .toList();
-      yield WeightDBLoadSuccess(updatedData);
-
       // Remove from the DB
-      this._repository.deleteWeight(event.data);
+      await this._repository.deleteWeight(event.data);
+      yield* _mapLoadedDataToState();
     }
   }
 
   Stream<WeightDBState> _mapDeleteAllDataToState() async* {
     if (state is WeightDBLoadSuccess) {
-      // Set an empty list
-      yield WeightDBLoadSuccess([]);
-
       // Delete from DB
-      this._repository.deleteAllWeight();
+      await this._repository.deleteAllWeight();
+      yield* _mapLoadedDataToState();
     }
   }
 
   Stream<WeightDBState> _mapWeightUpdateToState(
-      WeightDBListUpdated event,) async* {
+    WeightDBListUpdated event,
+  ) async* {
     yield WeightDBLoadSuccess(event.weightList);
   }
 

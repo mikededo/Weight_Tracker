@@ -1,6 +1,6 @@
 class Pair<F, S> {
-  final F first;
-  final S second;
+  F first;
+  S second;
 
   Pair({this.first, this.second});
 
