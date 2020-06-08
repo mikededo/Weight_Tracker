@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/data/blocs/chart_display_bloc/chart_button_bloc.dart';
 import 'package:weight_tracker/widgets/chart_button.dart';
 import 'package:weight_tracker/widgets/weight_db_bloc_builder.dart';
 
@@ -12,35 +14,99 @@ class WeightLineChart extends StatefulWidget {
 }
 
 class _WeightLineChartState extends State<WeightLineChart> {
-  List<Widget> _buildChangeGraphButtons() {
+  ChartState _currentState = ChartState.OneWeek;
+  final List<int> _buttonsIds = [0, 1, 2, 3];
+
+  Widget _getChartButton({
+    @required BuildContext context,
+    @required int idIndex,
+    @required String text,
+  }) {
+    return ChartButton(
+      id: _buttonsIds[idIndex],
+      text: text,
+      activeColor: Theme.of(context).accentColor,
+      onTap: () {
+        setState(() => _currentState = ChartState.values[idIndex]);
+        BlocProvider.of<ChartButtonBloc>(context).add(
+          ChartButtonPressed(_buttonsIds[idIndex]),
+        );
+      },
+    );
+  }
+
+  List<Widget> _buildChangeGraphButtons(
+    BuildContext blocCtx,
+  ) {
+    // We have to create a new context since the bloc is created in
+    // the same widget
     return [
-      ChartButton(
+      _getChartButton(
+        context: blocCtx,
+        idIndex: 0,
         text: '1 W',
-        activeColor: Theme.of(context).accentColor,
-        onTap: () => print('pressed'),
       ),
-      ChartButton(
+      _getChartButton(
+        context: blocCtx,
+        idIndex: 1,
         text: '1 M',
-        activeColor: Theme.of(context).accentColor,
-        onTap: () => print('pressed'),
       ),
-      ChartButton(
+      _getChartButton(
+        context: blocCtx,
+        idIndex: 2,
         text: '6 M',
-        activeColor: Theme.of(context).accentColor,
-        onTap: () => print('pressed'),
       ),
-      ChartButton(
+      _getChartButton(
+        context: blocCtx,
+        idIndex: 3,
         text: '1 Y',
-        activeColor: Theme.of(context).accentColor,
-        onTap: () => print('pressed'),
       ),
     ];
   }
 
+  FlLine _verticalLinesFromState(double value) {
+    switch (_currentState) {
+      case ChartState.OneMonth:
+        if (value % 5 == 0) {
+          return FlLine(
+            color: Colors.white24,
+            strokeWidth: .5,
+          );
+        }
+        break;
+      case ChartState.SixMonths:
+        if (value % 31 == 0) {
+          return FlLine(
+            color: Colors.white24,
+            strokeWidth: .5,
+          );
+        }
+        break;
+      case ChartState.OneYear:
+        if (value % 61 == 0) {
+          return FlLine(
+            color: Colors.white24,
+            strokeWidth: .5,
+          );
+        }
+        break;
+      default:
+        return FlLine(
+          color: Colors.white24,
+          strokeWidth: .5,
+        );
+        break;
+    }
+
+    return FlLine(color: Colors.transparent);
+  }
+
   LineChartData _buildChartData(ChartManager manager) {
     // Temp variables
-    double minValue = manager.minValue - manager.minMaxDiff;
-    double maxValue = manager.maxValue + manager.minMaxDiff;
+    double minValue =
+        manager.minValue(_currentState) - manager.minMaxDiff(_currentState);
+    double maxValue =
+        manager.maxValue(_currentState) + manager.minMaxDiff(_currentState);
 
     // Recap list information
     return LineChartData(
@@ -48,19 +114,14 @@ class _WeightLineChartState extends State<WeightLineChart> {
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,
-        getDrawingVerticalLine: (value) {
-          return FlLine(
-            color: Colors.white24,
-            strokeWidth: .5,
-          );
-        },
+        getDrawingVerticalLine: _verticalLinesFromState,
         getDrawingHorizontalLine: (value) {
           return FlLine(
             color: Colors.white24,
             strokeWidth: .5,
           );
         },
-        horizontalInterval: manager.minMaxDiff,
+        horizontalInterval: manager.minMaxDiff(_currentState),
       ),
       lineTouchData: LineTouchData(
         touchTooltipData: LineTouchTooltipData(
@@ -68,7 +129,7 @@ class _WeightLineChartState extends State<WeightLineChart> {
         ),
         touchCallback: (LineTouchResponse touchResponse) {},
         handleBuiltInTouches: true,
-      ),      
+      ),
       titlesData: FlTitlesData(
         bottomTitles: SideTitles(
           reservedSize: 12.0,
@@ -77,7 +138,7 @@ class _WeightLineChartState extends State<WeightLineChart> {
             color: Color(0xff72719b),
             fontSize: 12.0,
           ),
-          getTitles: manager.getYAxisTitles,
+          getTitles: (value) => manager.getYAxisTitles(value, _currentState),
         ),
         leftTitles: SideTitles(
           showTitles: true,
@@ -85,7 +146,7 @@ class _WeightLineChartState extends State<WeightLineChart> {
             color: Color(0xff5a646e),
             fontSize: 12.0,
           ),
-          interval: manager.minMaxDiff,
+          interval: manager.minMaxDiff(_currentState),
           getTitles: (value) {
             return !(value == minValue || value == maxValue)
                 ? value.toStringAsFixed(1)
@@ -102,7 +163,7 @@ class _WeightLineChartState extends State<WeightLineChart> {
         ),
       ),
       minX: 0,
-      maxX: 6,
+      maxX: manager.totalDays(_currentState),
       minY: minValue,
       maxY: maxValue,
       lineBarsData: _weightData(manager),
@@ -110,14 +171,14 @@ class _WeightLineChartState extends State<WeightLineChart> {
   }
 
   List<LineChartBarData> _weightData(ChartManager manager) {
-    List<FlSpot> _list = manager.stateData
-        .map(
-          (pair) => FlSpot(
-            pair.first,
-            pair.second,
-          ),
-        )
-        .toList();
+    print(_currentState);
+    List<FlSpot> _list = manager.stateData(_currentState).map((pair) {
+      print(pair);
+      return FlSpot(
+        pair.first,
+        pair.second,
+      );
+    }).toList();
 
     final List<Color> gradientColors = [
       const Color(0xFFFDC830),
@@ -131,7 +192,7 @@ class _WeightLineChartState extends State<WeightLineChart> {
       barWidth: 2,
       isStrokeCapRound: true,
       dotData: FlDotData(
-        show: true,
+        show: _currentState == ChartState.OneWeek || _currentState == ChartState.OneMonth,
         dotSize: 3.0,
       ),
       belowBarData: BarAreaData(
@@ -162,7 +223,11 @@ class _WeightLineChartState extends State<WeightLineChart> {
               Container(
                 height: MediaQuery.of(context).size.height * 0.2,
                 child: LineChart(
-                  _buildChartData(ChartManager(ChartDataController(state.weightCollection),),),
+                  _buildChartData(
+                    ChartManager(
+                      ChartDataController(state.weightCollection),
+                    ),
+                  ),
                   swapAnimationDuration: const Duration(milliseconds: 250),
                 ),
               ),
@@ -170,9 +235,14 @@ class _WeightLineChartState extends State<WeightLineChart> {
                 height: 12.0,
               ),
               Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: _buildChangeGraphButtons(),
+                child: BlocProvider<ChartButtonBloc>(
+                  create: (_) => ChartButtonBloc(_buttonsIds),
+                  child: Builder(
+                    builder: (blocCtx) => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: _buildChangeGraphButtons(blocCtx),
+                    ),
+                  ),
                 ),
               )
             ],

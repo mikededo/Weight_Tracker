@@ -14,64 +14,11 @@ class ChartManager {
   /// Controller that will handle the data management
   final ChartDataController _controller;
 
-  /// Current State of the data, initialised as OneWeek
-  ChartState _currentState;
-
-  ChartManager(this._controller, [this._currentState = ChartState.OneWeek]);
-
-  /// Changes the state
-  set changeState(ChartState newState) => _currentState = newState;
-
-  /// Returns the max value of the current graph state
-  double get maxValue {
-    double max;
-    switch (_currentState) {
-      case ChartState.OneWeek:
-        max = _controller.lastSevenDaysMaxWeight.second;
-        break;
-      case ChartState.OneMonth:
-        break;
-      // max = _controller.onMonthMaxWeight.second;
-      case ChartState.SixMonths:
-        // max = _controller.sixMonthsMaxWeight.second;
-        break;
-      case ChartState.OneYear:
-        max = _controller.allTimeMaxWeight.second;
-        break;
-    }
-
-    return UnitConverter.doubleToFixedDecimals(max, 1);
-  }
-
-  /// Returns the min value of the current graph state
-  double get minValue {
-    double min;
-    print(_currentState);
-    switch (_currentState) {
-      case ChartState.OneWeek:
-        min = _controller.lastSevenDaysMinWeight.second;
-        break;
-      case ChartState.OneMonth:
-        min = _controller.oneMonthMaxWeight.second;
-        break;
-      case ChartState.SixMonths:
-        min = _controller.sixMonthsMaxWeight.second;
-        break;
-      case ChartState.OneYear:
-        min = _controller.allTimeMinWeight.second;
-        break;
-    }
-
-    return UnitConverter.doubleToFixedDecimals(min, 1);
-  }
-
-  /// Returns the difference between the min and the max value
-  /// of the current graph state divided by 2
-  double get minMaxDiff => (maxValue - minValue) / 2;
+  ChartManager(this._controller);
 
   /// Returns the data of the current state parsed for the graph
-  List<Pair<double, double>> get stateData {
-    switch (_currentState) {
+  List<Pair<double, double>> stateData(ChartState state) {
+    switch (state) {
       case ChartState.OneWeek:
         return _controller.lastSevenDaysData;
       case ChartState.OneMonth:
@@ -83,15 +30,62 @@ class ChartManager {
     }
   }
 
+  /// Returns the max value of the current graph state
+  double maxValue(ChartState state) {
+    double max;
+    switch (state) {
+      case ChartState.OneWeek:
+        max = _controller.lastSevenDaysMaxWeight.second;
+        break;
+      case ChartState.OneMonth:
+        max = _controller.oneMonthMaxWeight.second;
+        break;
+      case ChartState.SixMonths:
+        max = _controller.sixMonthsMaxWeight.second;
+        break;
+      case ChartState.OneYear:
+        max = _controller.oneYearMaxWeight.second;
+        break;
+    }
+
+    return UnitConverter.doubleToFixedDecimals(max, 1);
+  }
+
+  /// Returns the min value of the current graph state
+  double minValue(ChartState state) {
+    double min;
+    switch (state) {
+      case ChartState.OneWeek:
+        min = _controller.lastSevenDaysMinWeight.second;
+        break;
+      case ChartState.OneMonth:
+        min = _controller.oneMonthMinWeight.second;
+        break;
+      case ChartState.SixMonths:
+        min = _controller.sixMonthsMinWeight.second;
+        break;
+      case ChartState.OneYear:
+        min = _controller.oneYearMinWeight.second;
+        break;
+    }
+
+    return UnitConverter.doubleToFixedDecimals(min, 1);
+  }
+
+  /// Returns the difference between the min and the max value
+  /// of the current graph state divided by 2
+  double minMaxDiff(ChartState state) =>
+      (maxValue(state) - minValue(state)) / 2;
+
   /// Returns the current graph state data length
-  double get totalDays {
-    switch (_currentState) {
+  double totalDays(ChartState state) {
+    switch (state) {
       case ChartState.OneWeek:
         return 6;
       case ChartState.OneMonth:
         return 30;
       case ChartState.SixMonths:
-        return 30.0 * 6;
+        return 186;
       default:
         return 365;
     }
@@ -99,8 +93,8 @@ class ChartManager {
 
   //! Y TITLE MANAGEMENT
   /// Returns the y axis values to display coming from the graph itself
-  String getYAxisTitles(double value) {
-    switch (_currentState) {
+  String getYAxisTitles(double value, ChartState state) {
+    switch (state) {
       case ChartState.OneWeek:
         return _oneWeekYTitle(value);
       case ChartState.OneMonth:
@@ -137,7 +131,9 @@ class ChartManager {
         days: (6 - value).floor(),
       ),
     );
-    return (timestamp.day == 7) ? DateFormat('d/M').format(timestamp) : null;
+    return (timestamp.day % 7 == 0)
+        ? DateFormat('d/M').format(timestamp)
+        : null;
   }
 
   /// Returns the y value when the state is [OneMonth]
@@ -147,7 +143,9 @@ class ChartManager {
         days: (6 - value).floor(),
       ),
     );
-    return (timestamp.day == 15) ? DateFormat('MMM').format(timestamp) : null;
+    return (timestamp.day % 16 == 0)
+        ? DateFormat('MMM').format(timestamp)
+        : null;
   }
 
   /// Returns the y value when the state is [OneMonth]
@@ -162,17 +160,3 @@ class ChartManager {
         : null;
   }
 }
-
-/* 
-
- switch (_currentState) {
-      case ChartState.OneWeek:
-        break;
-      case ChartState.OneMonth:
-        break;
-      case ChartState.SixMonths:
-        break;
-      case ChartState.OneYear:
-        break;
-    }
- */

@@ -101,9 +101,6 @@ class ChartData {
       _lastSevenDaysData = _calculateLastSevenDaysData();
       _lastSevenDaysMaxWeight = _calculateSevenDaysMaxWeight();
       _lastSevenDaysMinWeight = _calculateSevenDaysMinWeight();
-      print(_lastSevenDaysData);
-      print(_lastSevenDaysMaxWeight);
-      print(_lastSevenDaysMinWeight);
     }
   }
 
@@ -119,7 +116,7 @@ class ChartData {
 
   /// Calculates all the data needed to display a one month chart
   /// only if this has not been set already
-  void loadSixMonthData() {
+  void loadSixMonthsData() {
     if (_sixMonthsData == null) {
       _sixMonthsData = _calculateSixMonthsData();
       _sixMonthsMaxWeight = _calculateSixMonthsMaxWeight();
@@ -128,7 +125,7 @@ class ChartData {
   }
   /// Calculates all the data needed to display a one month chart
   /// only if this has not been set already
-  void loadOneYearata() {
+  void loadOneYearData() {
     if (_oneYearData == null) {
       _oneYearData = _calculateOneYearData();
       _oneYearMaxWeight = _calculateOneYearMaxWeight();
@@ -162,7 +159,7 @@ class ChartData {
 
   //! SEVEN DAYS GETTERS
   /// Returns the data of the last seven days parsed for the graph
-  List<Pair<double, double>> get lastSevenDays => _lastSevenDaysData;
+  List<Pair<double, double>> get lastSevenDaysData => _lastSevenDaysData;
 
   /// Returns the data of the max weight and its index relative to
   /// [lastSevenDays] list
@@ -247,7 +244,7 @@ class ChartData {
   //! DATA INIT
   /// Returns the entire list data as pair of weight and their index
   /// in the general list
-  List<Pair<double, double>> _dataAsPairs() => _dateRangeList(todayDate);
+  List<Pair<double, double>> _dataAsPairs() => _dateRangeList(todayDate, _data.length, _data.length);
 
   Pair<int, double> _calculateMaxItem() {
     if (_data.isEmpty) {
@@ -295,7 +292,7 @@ class ChartData {
 
   /// Calculates the last seven days data
   List<Pair<double, double>> _calculateLastSevenDaysData() =>
-      _dateRangeList(todayDate, _data.length > 7 ? 7 : _data.length);
+      _dateRangeList(todayDate, _weekDays, _data.length > 7 ? 7 : _data.length);
 
   /// Calculates the last seven days max value
   Pair<int, double> _calculateSevenDaysMaxWeight() {
@@ -317,7 +314,7 @@ class ChartData {
 
   /// Calculates the last one month data
   List<Pair<double, double>> _calculateOneMonthData() => _dateRangeList(
-      todayDate, _data.length > _monthDays ? _monthDays : _data.length);
+      todayDate, _monthDays, _data.length > _monthDays ? _monthDays : _data.length);
 
   /// Calculates the last one month max value
   Pair<int, double> _calculateOneMonthMaxWeight() {
@@ -339,7 +336,7 @@ class ChartData {
 
   /// Calculates the last six months data
   List<Pair<double, double>> _calculateSixMonthsData() => _dateRangeList(
-      todayDate, _data.length > _sixMonthsDays ? _sixMonthsDays : _data.length);
+      todayDate, _sixMonthsDays, _data.length > _sixMonthsDays ? _sixMonthsDays : _data.length);
 
   /// Calculates the last six months max value
   Pair<int, double> _calculateSixMonthsMaxWeight() {
@@ -361,7 +358,7 @@ class ChartData {
 
   /// Calculates the last one year data
   List<Pair<double, double>> _calculateOneYearData() => _dateRangeList(
-      todayDate, _data.length > _oneYearDays ? _oneYearDays : _data.length);
+      todayDate, _oneYearDays, _data.length > _oneYearDays ? _oneYearDays : _data.length);
 
   /// Calculates the last one year max value
   Pair<int, double> _calculateOneYearMaxWeight() {
@@ -384,14 +381,16 @@ class ChartData {
   /// Returns a list of doubles with all the data from the position 0 to [end]
   /// (exclusive) of the list where [0 <= end <= length]
   /// If [end] is null, [length] will be used
-  List<Pair<double, double>> _dateRangeList(DateTime timestamp, [int end]) {
+  /// The items will be placing from [max] to 0 where the closer to [max] the index
+  /// of an item is, more close to today is
+  List<Pair<double, double>> _dateRangeList(DateTime timestamp, int max, [int end]) {
     List<Pair<double, double>> res = [];
-    for (int i = 0; i < end ?? _data.length; i++) {
+    for (int i = 0; i < (end ?? _data.length); i++) {
       DateTime temp = timestamp.subtract(Duration(days: i));
       if (_dataMap.containsKey(temp)) {
         res.add(
           Pair<double, double>(
-            first: ((end ?? _data.length) - i - 1).floorToDouble(),
+            first: (max - i - 1).floorToDouble(),
             second: UnitConverter.doubleToFixedDecimals(
               _dataMap[temp].weight,
               2,

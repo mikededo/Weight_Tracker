@@ -4,10 +4,11 @@ import 'package:weight_tracker/util/pair.dart';
 import 'chart_data.dart';
 
 class ChartDataController extends ChartData {
+  bool _allTimeLoaded = false;
   bool _lastSevenDaysLoaded = false;
   bool _oneMonthLoaded = false;
   bool _sixMonthsLoaded = false;
-  bool _allTimeLoaded = false;
+  bool _oneYearLoaded = false;
 
   ChartDataController(List<WeightData> data) : super(data);
 
@@ -34,7 +35,7 @@ class ChartDataController extends ChartData {
   /// if not it loads it
   void _checkOneMonthLoaded() {
     if (!_oneMonthLoaded) {
-      // loadOneMonthData();
+      loadOneMonthData();
       _oneMonthLoaded = true;
     }
   }
@@ -43,7 +44,7 @@ class ChartDataController extends ChartData {
   /// if not it loads it
   void _checkSixMonthsLoaded() {
     if (!_sixMonthsLoaded) {
-      // loadSixMonthsData();
+      loadSixMonthsData();
       _sixMonthsLoaded = true;
     }
   }
@@ -51,9 +52,9 @@ class ChartDataController extends ChartData {
   /// Checks if the last year data has been loaded and 
   /// if not it loads it
   void _checkOneYearLoaded() {
-    if (!_sixMonthsLoaded) {
-      // loadSixMonthsData();
-      _sixMonthsLoaded = true;
+    if (!_oneYearLoaded) {
+      loadOneYearData();
+      _oneYearLoaded = true;
     }
   }
 
@@ -94,7 +95,7 @@ class ChartDataController extends ChartData {
   /// Returns the data of the last seven days parsed for the graph
   List<Pair<double, double>> get lastSevenDaysData {
     _checkLastSevenDaysLoaded();
-    return super.lastSevenDays;
+    return super.lastSevenDaysData;
   }
 
   /// Returns the data of the max weight and its index relative to
