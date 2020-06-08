@@ -17,8 +17,11 @@ class WeightValueTile extends StatelessWidget {
       BlocProvider.of<WeightCounterBloc>(context)
           .add(WeightCounterValueReset());
 
-  Widget _addWeightButtonConfig(BuildContext context,
-      {String text, Function onTap}) {
+  Widget _addWeightButtonConfig(
+    BuildContext context, {
+    String text,
+    Function onTap,
+  }) {
     return InkWell(
       child: Container(
         decoration: BoxDecoration(
@@ -39,7 +42,6 @@ class WeightValueTile extends StatelessWidget {
   }
 
   List<Widget> _buildAddWeightButtons(BuildContext context, String unitsText) {
-
     return [
       _addWeightButtonConfig(
         context,

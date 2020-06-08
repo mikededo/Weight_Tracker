@@ -1,20 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
-import 'package:weight_tracker/util/util.dart';
+import 'package:weight_tracker/widgets/chart_button.dart';
 import 'package:weight_tracker/widgets/weight_db_bloc_builder.dart';
 
-import '../data/models/chart_data_controller.dart';
+import '../ui/logic/chart_data_controller.dart';
+import '../ui/logic/chart_manager.dart';
 
-class WeightLineChart extends StatelessWidget {
-  final List<Color> gradientColors = [
-    const Color(0xff23b6e6),
-    const Color(0xff02d39a),
-  ];
+class WeightLineChart extends StatefulWidget {
+  @override
+  _WeightLineChartState createState() => _WeightLineChartState();
+}
 
-  LineChartData _buildChartData(ChartDataController dataController) {
-    print(dataController.lastSevenDaysFirstDate.month.floorToDouble());
-    print(dataController.lastSevenDaysLastDate.month.floorToDouble());
+class _WeightLineChartState extends State<WeightLineChart> {
+  List<Widget> _buildChangeGraphButtons() {
+    return [
+      ChartButton(
+        text: '1 W',
+        activeColor: Theme.of(context).accentColor,
+        onTap: () => print('pressed'),
+      ),
+      ChartButton(
+        text: '1 M',
+        activeColor: Theme.of(context).accentColor,
+        onTap: () => print('pressed'),
+      ),
+      ChartButton(
+        text: '6 M',
+        activeColor: Theme.of(context).accentColor,
+        onTap: () => print('pressed'),
+      ),
+      ChartButton(
+        text: '1 Y',
+        activeColor: Theme.of(context).accentColor,
+        onTap: () => print('pressed'),
+      ),
+    ];
+  }
+
+  LineChartData _buildChartData(ChartManager manager) {
+    // Temp variables
+    double minValue = manager.minValue - manager.minMaxDiff;
+    double maxValue = manager.maxValue + manager.minMaxDiff;
+
     // Recap list information
     return LineChartData(
       clipToBorder: true,
@@ -33,6 +60,7 @@ class WeightLineChart extends StatelessWidget {
             strokeWidth: .5,
           );
         },
+        horizontalInterval: manager.minMaxDiff,
       ),
       lineTouchData: LineTouchData(
         touchTooltipData: LineTouchTooltipData(
@@ -40,7 +68,7 @@ class WeightLineChart extends StatelessWidget {
         ),
         touchCallback: (LineTouchResponse touchResponse) {},
         handleBuiltInTouches: true,
-      ),
+      ),      
       titlesData: FlTitlesData(
         bottomTitles: SideTitles(
           reservedSize: 12.0,
@@ -49,16 +77,7 @@ class WeightLineChart extends StatelessWidget {
             color: Color(0xff72719b),
             fontSize: 12.0,
           ),
-          getTitles: (value) {
-            // Calculate value's day
-            DateTime timestamp = dataController.lastSevenDaysLastDate.subtract(
-              Duration(
-                days: (6 - value).floor(),
-              ),
-            );
-
-            return DateFormat('d/M').format(timestamp);
-          },
+          getTitles: manager.getYAxisTitles,
         ),
         leftTitles: SideTitles(
           showTitles: true,
@@ -66,9 +85,11 @@ class WeightLineChart extends StatelessWidget {
             color: Color(0xff5a646e),
             fontSize: 12.0,
           ),
-          interval: dataController.minMaxDiff * 2,
+          interval: manager.minMaxDiff,
           getTitles: (value) {
-            return value.toStringAsFixed(1);
+            return !(value == minValue || value == maxValue)
+                ? value.toStringAsFixed(1)
+                : null;
           },
           reservedSize: 24.0,
         ),
@@ -82,20 +103,14 @@ class WeightLineChart extends StatelessWidget {
       ),
       minX: 0,
       maxX: 6,
-      minY: UnitConverter.doubleToFixedDecimals(
-        dataController.minWeight.second - dataController.minMaxDiff,
-        1,
-      ),
-      maxY: UnitConverter.doubleToFixedDecimals(
-        dataController.maxWeight.second + dataController.minMaxDiff,
-        1,
-      ),
-      lineBarsData: _weightData(dataController),
+      minY: minValue,
+      maxY: maxValue,
+      lineBarsData: _weightData(manager),
     );
   }
 
-  List<LineChartBarData> _weightData(ChartDataController dataController) {
-    List<FlSpot> _list = dataController.lastSevenDays
+  List<LineChartBarData> _weightData(ChartManager manager) {
+    List<FlSpot> _list = manager.stateData
         .map(
           (pair) => FlSpot(
             pair.first,
@@ -104,9 +119,14 @@ class WeightLineChart extends StatelessWidget {
         )
         .toList();
 
+    final List<Color> gradientColors = [
+      const Color(0xFFFDC830),
+      const Color(0xFFF37335),
+    ];
+
     final LineChartBarData weightData = LineChartBarData(
       spots: _list,
-      isCurved: false,
+      isCurved: true,
       colors: gradientColors,
       barWidth: 2,
       isStrokeCapRound: true,
@@ -125,13 +145,37 @@ class WeightLineChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.2,
-      width: double.infinity,
       child: WeightDBBlocBuilder(
         onLoaded: (state) {
-          return LineChart(
-            _buildChartData(ChartDataController(state.weightCollection)),
-            swapAnimationDuration: const Duration(milliseconds: 250),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.only(bottom: 12.0),
+                child: Center(
+                  child: Text(
+                    'Weight Evolution',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                ),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.2,
+                child: LineChart(
+                  _buildChartData(ChartManager(ChartDataController(state.weightCollection),),),
+                  swapAnimationDuration: const Duration(milliseconds: 250),
+                ),
+              ),
+              SizedBox(
+                height: 12.0,
+              ),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: _buildChangeGraphButtons(),
+                ),
+              )
+            ],
           );
         },
       ),
