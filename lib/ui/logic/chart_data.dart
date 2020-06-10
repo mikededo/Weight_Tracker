@@ -150,8 +150,11 @@ class ChartData {
   /// Returns min weight and its index of the entire data
   Pair<int, double> get allTimeMinWeight => _allTimeMinItem;
 
-  /// Returns firts date of the entire data
-  DateTime get firstDate => _data.last.date;
+  /// Returns first date of the entire data
+  WeightData get firstData => _data.last;
+
+  /// Returns last date of the entire data
+  WeightData get lastData => _data.first;
 
   /// Returns the weight difference between the max and min of the
   /// entire list

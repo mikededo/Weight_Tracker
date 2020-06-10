@@ -3,14 +3,18 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weight_tracker/data/blocs/chart_display_bloc/chart_button_bloc.dart';
 import 'package:weight_tracker/data/blocs/user_preferences_bloc/user_preferences_bloc.dart';
+import 'package:weight_tracker/data/models/weight.dart';
 import 'package:weight_tracker/util/util.dart';
 import 'package:weight_tracker/widgets/chart_button.dart';
-import 'package:weight_tracker/widgets/weight_db_bloc_builder.dart';
 
 import '../ui/logic/chart_data_controller.dart';
 import '../ui/logic/chart_manager.dart';
 
 class WeightLineChart extends StatefulWidget {
+  final List<WeightData> state;
+
+  WeightLineChart(this.state);
+
   @override
   _WeightLineChartState createState() => _WeightLineChartState();
 }
@@ -20,7 +24,6 @@ class _WeightLineChartState extends State<WeightLineChart> {
   final List<int> _buttonsIds = [0, 1, 2, 3];
 
   Widget _getChartButton({
-    @required BuildContext context,
     @required int idIndex,
     @required String text,
   }) {
@@ -37,29 +40,23 @@ class _WeightLineChartState extends State<WeightLineChart> {
     );
   }
 
-  List<Widget> _buildChangeGraphButtons(
-    BuildContext blocCtx,
-  ) {
+  List<Widget> _buildChangeGraphButtons() {
     // We have to create a new context since the bloc is created in
     // the same widget
     return [
       _getChartButton(
-        context: blocCtx,
         idIndex: 0,
         text: '1 W',
       ),
       _getChartButton(
-        context: blocCtx,
         idIndex: 1,
         text: '1 M',
       ),
       _getChartButton(
-        context: blocCtx,
         idIndex: 2,
         text: '6 M',
       ),
       _getChartButton(
-        context: blocCtx,
         idIndex: 3,
         text: '1 Y',
       ),
@@ -225,39 +222,30 @@ class _WeightLineChartState extends State<WeightLineChart> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: WeightDBBlocBuilder(
-        onLoaded: (state) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                height: MediaQuery.of(context).size.height * 0.2,
-                child: LineChart(
-                  _buildChartData(
-                    ChartManager(
-                      ChartDataController(state.weightCollection),
-                    ),
-                  ),
-                  swapAnimationDuration: Duration(milliseconds: 300),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Container(
+            height: MediaQuery.of(context).size.height * 0.2,
+            child: LineChart(
+              _buildChartData(
+                ChartManager(
+                  ChartDataController(widget.state),
                 ),
               ),
-              SizedBox(
-                height: 12.0,
-              ),
-              Container(
-                child: BlocProvider<ChartButtonBloc>(
-                  create: (_) => ChartButtonBloc(_buttonsIds),
-                  child: Builder(
-                    builder: (blocCtx) => Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: _buildChangeGraphButtons(blocCtx),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          );
-        },
+              swapAnimationDuration: Duration(milliseconds: 300),
+            ),
+          ),
+          SizedBox(
+            height: 12.0,
+          ),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: _buildChangeGraphButtons(),
+            ),
+          )
+        ],
       ),
     );
   }

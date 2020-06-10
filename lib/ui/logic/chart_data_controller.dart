@@ -60,12 +60,18 @@ class ChartDataController extends ChartData {
 
   //! CORE FUNCTIONS
   /// Returns data length
-  int get length {
+  int get dataLength {
     _checkAllTimeLoaded();
     return super.length;
   }
 
   //! ALL TIME
+  /// Returns the date of the first weight
+  WeightData get firstData => super.firstData;
+
+  /// Returns the date of the first weight
+  WeightData get lastDate => super.lastData;
+
   /// Returns the data of the entire list parsed for the graph
   List<Pair<double, double>> get allTimeData {
     _checkAllTimeLoaded();

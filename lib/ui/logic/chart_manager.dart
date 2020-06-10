@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'package:weight_tracker/data/models/weight.dart';
 import 'package:weight_tracker/ui/logic/chart_data_controller.dart';
 import 'package:weight_tracker/util/pair.dart';
 import 'package:weight_tracker/util/util.dart';
@@ -21,6 +22,15 @@ class ChartManager {
   static const monthDays = 31;
   static const sixMonthsDays = 186;
   static const oneYearDays = 365;
+
+  /// Returns the all time first data
+  WeightData get firstData => _controller.firstData;
+
+  /// Returns the all time last data
+  WeightData get lastData => _controller.lastData;
+
+  /// Returns the total data length
+  int get dataLength => _controller.dataLength;
 
   /// Returns the data of the current state parsed for the graph
   List<Pair<double, double>> stateData(ChartState state) {

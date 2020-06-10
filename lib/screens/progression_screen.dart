@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weight_tracker/data/blocs/chart_display_bloc/chart_button_bloc.dart';
 import 'package:weight_tracker/data/models/weight.dart';
+import 'package:weight_tracker/widgets/user_statistics.dart';
 import 'package:weight_tracker/widgets/tile.dart';
 import 'package:weight_tracker/widgets/weight_db_bloc_builder.dart';
 import 'package:weight_tracker/widgets/weight_line_chart.dart';
@@ -71,43 +74,56 @@ class ProgressionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: DefaultPageLayout(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            ScreenHeader(
-              text: 'Progress',
-            ),
-            Tile(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              hasBackground: false,
-              child: WeightDBBlocBuilder(
-                onLoaded: (state) {
-                  int streak = _calculateWeightStreak(state.weightCollection);
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        'Current Streak:',
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                      Text(
-                        '${streak.toString()} ${_getIcon(streak)}',
-                        style: Theme.of(context).textTheme.headline5,
-                      )
-                    ],
-                  );
-                },
+        child: WeightDBBlocBuilder(
+          onLoaded: (state) {
+            int streak = _calculateWeightStreak(state.weightCollection);
+            return BlocProvider<ChartButtonBloc>(
+              create: (_) => ChartButtonBloc([0, 1, 2, 3]),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  ScreenHeader(
+                    text: 'Progress',
+                  ),
+                  Tile(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    hasBackground: false,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          'Current Streak:',
+                          style: Theme.of(context).textTheme.headline5,
+                        ),
+                        Text(
+                          '${streak.toString()} ${_getIcon(streak)}',
+                          style: Theme.of(context).textTheme.headline5,
+                        )
+                      ],
+                    ),
+                  ),
+                  Text(
+                    'Progress Chart',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  Tile(
+                    margin: const EdgeInsets.only(top: 12.0),
+                    child: WeightLineChart(state.weightCollection),
+                  ),
+                  SizedBox(height: 12.0),
+                  Text(
+                    'More Information',
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 12.0),
+                    height: MediaQuery.of(context).size.height * 0.375,
+                    child: UserStatistics(state.weightCollection),
+                  ),
+                ],
               ),
-            ),
-            Text(
-              'Progress Chart',
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-            Tile(
-              margin: const EdgeInsets.only(top: 12.0),
-              child: WeightLineChart(),
-            )
-          ],
+            );
+          },
         ),
       ),
     );
