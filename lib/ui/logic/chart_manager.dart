@@ -16,6 +16,12 @@ class ChartManager {
 
   ChartManager(this._controller);
 
+  //! DATE CONSTANTS
+  static const _weekDays = 7;
+  static const _monthDays = 31;
+  static const _sixMonthsDays = 186;
+  static const _oneYearDays = 365;
+
   /// Returns the data of the current state parsed for the graph
   List<Pair<double, double>> stateData(ChartState state) {
     switch (state) {
@@ -78,16 +84,16 @@ class ChartManager {
       (maxValue(state) - minValue(state)) / 2;
 
   /// Returns the current graph state data length
-  double totalDays(ChartState state) {
+  double maxXValue(ChartState state) {
     switch (state) {
       case ChartState.OneWeek:
-        return 6;
+        return (_weekDays - 1).toDouble();
       case ChartState.OneMonth:
-        return 30;
+        return (_monthDays - 1).toDouble();
       case ChartState.SixMonths:
-        return 186;
+        return (_sixMonthsDays - 1).toDouble();
       default:
-        return 365;
+        return (_oneYearDays - 1).toDouble();
     }
   }
 
@@ -111,7 +117,7 @@ class ChartManager {
     // DateTime.now() would work as well
     DateTime timestamp = _controller.todayDate.subtract(
       Duration(
-        days: (6 - value).floor(),
+        days: (_weekDays - value - 1).floor(),
       ),
     );
     return !(timestamp.isAtSameMomentAs(
@@ -128,10 +134,10 @@ class ChartManager {
   String _oneMonthYTitle(double value) {
     DateTime timestamp = _controller.todayDate.subtract(
       Duration(
-        days: (6 - value).floor(),
+        days: (_monthDays - value - 1).floor(),
       ),
     );
-    return (timestamp.day % 7 == 0)
+    return (timestamp.day % 7 == 0 || timestamp.day % 7 == 3)
         ? DateFormat('d/M').format(timestamp)
         : null;
   }
@@ -140,10 +146,10 @@ class ChartManager {
   String _sixMonthYTitle(double value) {
     DateTime timestamp = _controller.todayDate.subtract(
       Duration(
-        days: (6 - value).floor(),
+        days: (_sixMonthsDays - value - 1).floor(),
       ),
     );
-    return (timestamp.day % 16 == 0)
+    return (timestamp.day == 15 || timestamp.day == 1)
         ? DateFormat('MMM').format(timestamp)
         : null;
   }
@@ -152,7 +158,7 @@ class ChartManager {
   String _oneYearYTitle(double value) {
     DateTime timestamp = _controller.todayDate.subtract(
       Duration(
-        days: (6 - value).floor(),
+        days: (_oneYearDays - value - 1).floor(),
       ),
     );
     return (timestamp.day == 15 && (timestamp.month % 4) == 0)

@@ -75,6 +75,8 @@ class ChartData {
         () => data[i],
       );
     }
+
+    print(_dataMap.keys.toList());
   }
 
   //! DATE CONSTANTS
@@ -292,7 +294,7 @@ class ChartData {
 
   /// Calculates the last seven days data
   List<Pair<double, double>> _calculateLastSevenDaysData() =>
-      _dateRangeList(todayDate, _weekDays, _data.length > 7 ? 7 : _data.length);
+      _dateRangeList(todayDate, _weekDays, _weekDays);
 
   /// Calculates the last seven days max value
   Pair<int, double> _calculateSevenDaysMaxWeight() {
@@ -314,7 +316,7 @@ class ChartData {
 
   /// Calculates the last one month data
   List<Pair<double, double>> _calculateOneMonthData() => _dateRangeList(
-      todayDate, _monthDays, _data.length > _monthDays ? _monthDays : _data.length);
+      todayDate, _monthDays, _monthDays);
 
   /// Calculates the last one month max value
   Pair<int, double> _calculateOneMonthMaxWeight() {
@@ -336,7 +338,7 @@ class ChartData {
 
   /// Calculates the last six months data
   List<Pair<double, double>> _calculateSixMonthsData() => _dateRangeList(
-      todayDate, _sixMonthsDays, _data.length > _sixMonthsDays ? _sixMonthsDays : _data.length);
+      todayDate, _sixMonthsDays, _sixMonthsDays);
 
   /// Calculates the last six months max value
   Pair<int, double> _calculateSixMonthsMaxWeight() {
@@ -358,7 +360,7 @@ class ChartData {
 
   /// Calculates the last one year data
   List<Pair<double, double>> _calculateOneYearData() => _dateRangeList(
-      todayDate, _oneYearDays, _data.length > _oneYearDays ? _oneYearDays : _data.length);
+      todayDate, _oneYearDays, _oneYearDays);
 
   /// Calculates the last one year max value
   Pair<int, double> _calculateOneYearMaxWeight() {
@@ -384,10 +386,13 @@ class ChartData {
   /// The items will be placing from [max] to 0 where the closer to [max] the index
   /// of an item is, more close to today is
   List<Pair<double, double>> _dateRangeList(DateTime timestamp, int max, [int end]) {
+    print(end);
     List<Pair<double, double>> res = [];
-    for (int i = 0; i < (end ?? _data.length); i++) {
+    for (int i = 0; i < end; i++) {
       DateTime temp = timestamp.subtract(Duration(days: i));
+      
       if (_dataMap.containsKey(temp)) {
+        print('$temp -> ${_dataMap.containsKey(temp)} -> ${max - i - 1}');
         res.add(
           Pair<double, double>(
             first: (max - i - 1).floorToDouble(),

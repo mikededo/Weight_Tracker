@@ -57,5 +57,5 @@ class WeightData {
   }
 
   @override
-  String toString() => 'Data: $id, $weight, $date';
+  String toString() => '\n Data: $id, $weight, $date';
 }

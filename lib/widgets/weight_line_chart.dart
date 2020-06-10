@@ -162,8 +162,8 @@ class _WeightLineChartState extends State<WeightLineChart> {
           width: 1,
         ),
       ),
-      minX: 0,
-      maxX: manager.totalDays(_currentState),
+      minX: manager.stateData(_currentState).last.first,
+      maxX: manager.maxXValue(_currentState),
       minY: minValue,
       maxY: maxValue,
       lineBarsData: _weightData(manager),
@@ -171,9 +171,7 @@ class _WeightLineChartState extends State<WeightLineChart> {
   }
 
   List<LineChartBarData> _weightData(ChartManager manager) {
-    print(_currentState);
     List<FlSpot> _list = manager.stateData(_currentState).map((pair) {
-      print(pair);
       return FlSpot(
         pair.first,
         pair.second,
@@ -188,6 +186,7 @@ class _WeightLineChartState extends State<WeightLineChart> {
     final LineChartBarData weightData = LineChartBarData(
       spots: _list,
       isCurved: true,
+      curveSmoothness: 0.2,
       colors: gradientColors,
       barWidth: 2,
       isStrokeCapRound: true,
@@ -228,7 +227,7 @@ class _WeightLineChartState extends State<WeightLineChart> {
                       ChartDataController(state.weightCollection),
                     ),
                   ),
-                  swapAnimationDuration: const Duration(milliseconds: 250),
+                  swapAnimationDuration: Duration(milliseconds: 300),
                 ),
               ),
               SizedBox(
