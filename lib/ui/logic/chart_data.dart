@@ -75,8 +75,6 @@ class ChartData {
         () => data[i],
       );
     }
-
-    print(_dataMap.keys.toList());
   }
 
   //! DATE CONSTANTS
@@ -125,6 +123,7 @@ class ChartData {
       _sixMonthsMinWeight = _calculateSixMonthsMinWeight();
     }
   }
+
   /// Calculates all the data needed to display a one month chart
   /// only if this has not been set already
   void loadOneYearData() {
@@ -246,7 +245,8 @@ class ChartData {
   //! DATA INIT
   /// Returns the entire list data as pair of weight and their index
   /// in the general list
-  List<Pair<double, double>> _dataAsPairs() => _dateRangeList(todayDate, _data.length, _data.length);
+  List<Pair<double, double>> _dataAsPairs() =>
+      _dateRangeList(todayDate, _data.length, _data.length);
 
   Pair<int, double> _calculateMaxItem() {
     if (_data.isEmpty) {
@@ -315,8 +315,8 @@ class ChartData {
   }
 
   /// Calculates the last one month data
-  List<Pair<double, double>> _calculateOneMonthData() => _dateRangeList(
-      todayDate, _monthDays, _monthDays);
+  List<Pair<double, double>> _calculateOneMonthData() =>
+      _dateRangeList(todayDate, _monthDays, _monthDays);
 
   /// Calculates the last one month max value
   Pair<int, double> _calculateOneMonthMaxWeight() {
@@ -337,8 +337,8 @@ class ChartData {
   }
 
   /// Calculates the last six months data
-  List<Pair<double, double>> _calculateSixMonthsData() => _dateRangeList(
-      todayDate, _sixMonthsDays, _sixMonthsDays);
+  List<Pair<double, double>> _calculateSixMonthsData() =>
+      _dateRangeList(todayDate, _sixMonthsDays, _sixMonthsDays);
 
   /// Calculates the last six months max value
   Pair<int, double> _calculateSixMonthsMaxWeight() {
@@ -359,8 +359,8 @@ class ChartData {
   }
 
   /// Calculates the last one year data
-  List<Pair<double, double>> _calculateOneYearData() => _dateRangeList(
-      todayDate, _oneYearDays, _oneYearDays);
+  List<Pair<double, double>> _calculateOneYearData() =>
+      _dateRangeList(todayDate, _oneYearDays, _oneYearDays);
 
   /// Calculates the last one year max value
   Pair<int, double> _calculateOneYearMaxWeight() {
@@ -382,17 +382,16 @@ class ChartData {
 
   /// Returns a list of doubles with all the data from the position 0 to [end]
   /// (exclusive) of the list where [0 <= end <= length]
-  /// If [end] is null, [length] will be used
   /// The items will be placing from [max] to 0 where the closer to [max] the index
   /// of an item is, more close to today is
-  List<Pair<double, double>> _dateRangeList(DateTime timestamp, int max, [int end]) {
-    print(end);
+  List<Pair<double, double>> _dateRangeList(
+      DateTime timestamp, int max, int end) {
     List<Pair<double, double>> res = [];
     for (int i = 0; i < end; i++) {
-      DateTime temp = timestamp.subtract(Duration(days: i));
-      
+      DateTime temp = UnitConverter.dateFromDateTime(
+        timestamp.subtract(Duration(days: i)),
+      );
       if (_dataMap.containsKey(temp)) {
-        print('$temp -> ${_dataMap.containsKey(temp)} -> ${max - i - 1}');
         res.add(
           Pair<double, double>(
             first: (max - i - 1).floorToDouble(),
@@ -402,6 +401,10 @@ class ChartData {
             ),
           ),
         );
+      }
+
+      if (res.length >= _data.length) {
+        break;
       }
     }
     return res;

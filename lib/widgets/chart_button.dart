@@ -23,6 +23,7 @@ class ChartButton extends StatelessWidget {
         return AnimatedContainer(
           duration: Duration(milliseconds: 50),
           curve: Curves.easeInOut,
+          margin: const EdgeInsets.only(left: 12.0),
           decoration: BoxDecoration(
             color: selectedId == id ? activeColor : Colors.transparent,
             borderRadius: BorderRadius.circular(6.0),

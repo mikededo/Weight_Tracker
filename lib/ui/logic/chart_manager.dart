@@ -17,10 +17,10 @@ class ChartManager {
   ChartManager(this._controller);
 
   //! DATE CONSTANTS
-  static const _weekDays = 7;
-  static const _monthDays = 31;
-  static const _sixMonthsDays = 186;
-  static const _oneYearDays = 365;
+  static const weekDays = 7;
+  static const monthDays = 31;
+  static const sixMonthsDays = 186;
+  static const oneYearDays = 365;
 
   /// Returns the data of the current state parsed for the graph
   List<Pair<double, double>> stateData(ChartState state) {
@@ -87,28 +87,98 @@ class ChartManager {
   double maxXValue(ChartState state) {
     switch (state) {
       case ChartState.OneWeek:
-        return (_weekDays - 1).toDouble();
+        return (weekDays - 1).toDouble();
       case ChartState.OneMonth:
-        return (_monthDays - 1).toDouble();
+        return (monthDays - 1).toDouble();
       case ChartState.SixMonths:
-        return (_sixMonthsDays - 1).toDouble();
+        return (sixMonthsDays - 1).toDouble();
       default:
-        return (_oneYearDays - 1).toDouble();
+        return (oneYearDays - 1).toDouble();
+    }
+  }
+
+  /// Returns the date difference between the first and last
+  /// item of the state data in days
+  int dayDifference(ChartState state) {
+    switch (state) {
+      case ChartState.OneMonth:
+        return (_controller.oneMonthData.first.first -
+                _controller.oneMonthData.last.first)
+            .floor();
+      case ChartState.SixMonths:
+        return (_controller.sixMonthsData.first.first -
+                _controller.sixMonthsData.last.first)
+            .floor();
+      case ChartState.OneYear:
+        return (_controller.oneYearData.first.first -
+                _controller.oneYearData.last.first)
+            .floor();
+      default:
+        return weekDays;
     }
   }
 
   //! Y TITLE MANAGEMENT
+  bool oneMonthVerticalLine(ChartState state, double value) {
+    if (dayDifference(state) <= monthDays / 2) {
+      return value % 3 == 0;
+    } else {
+      return value % 5 == 0;
+    }
+  }
+
+  bool sixMonthsVerticalLine(ChartState state, double value) {
+    int diff = dayDifference(state);
+
+    // All cases
+    if (diff <= weekDays) {
+      return true;
+    } else if (diff <= monthDays) {
+      return oneMonthVerticalLine(state, value);
+    } else {
+      if (diff <= sixMonthsDays / 4) {
+        return value % 5 == 0;
+      } else if (diff <= sixMonthsDays / 2) {
+        return value % 15 == 0;
+      } else if (diff <= sixMonthsDays * 0.75) {
+        return value % 17 == 0;
+      } else {
+        return value % 30 == 0;
+      }
+    }
+  }
+
+  bool oneYearVerticalLine(ChartState state, double value) {
+    int diff = dayDifference(state);
+
+    // All cases
+    if (diff < sixMonthsDays) {
+      return sixMonthsVerticalLine(state, value);
+    } else {
+      if (diff < oneYearDays * 0.625) {
+        return value % 32 == 0;
+      } else if (diff < oneYearDays * 0.75) {
+        return value % 40 == 0;
+      } else if (diff < oneYearDays * 0.825) {
+        return value % 50 == 0;
+      } else {
+        return value % 60 == 0;
+      }
+    }
+  }
+
   /// Returns the y axis values to display coming from the graph itself
-  String getYAxisTitles(double value, ChartState state) {
+  String getYAxisTitles(ChartState state, double value) {
+
     switch (state) {
       case ChartState.OneWeek:
         return _oneWeekYTitle(value);
       case ChartState.OneMonth:
-        return _oneMonthYTitle(value);
+        return _oneMonthYTitle(state, value);
       case ChartState.SixMonths:
-        return _sixMonthYTitle(value);
+        return _sixMonthYTitle(state, value);
       default:
-        return _oneYearYTitle(value);
+        return _oneYearYTitle(state, value);
     }
   }
 
@@ -117,7 +187,7 @@ class ChartManager {
     // DateTime.now() would work as well
     DateTime timestamp = _controller.todayDate.subtract(
       Duration(
-        days: (_weekDays - value - 1).floor(),
+        days: (weekDays - value - 1).floor(),
       ),
     );
     return !(timestamp.isAtSameMomentAs(
@@ -131,38 +201,36 @@ class ChartManager {
   }
 
   /// Returns the y value when the state is [OneMonth]
-  String _oneMonthYTitle(double value) {
+  String _oneMonthYTitle(ChartState state, double value) {
     DateTime timestamp = _controller.todayDate.subtract(
       Duration(
-        days: (_monthDays - value - 1).floor(),
+        days: (monthDays - value - 1).floor(),
       ),
     );
-    return (timestamp.day % 7 == 0 || timestamp.day % 7 == 3)
-        ? DateFormat('d/M').format(timestamp)
-        : null;
+    return oneMonthVerticalLine(state, value) ? DateFormat('d/M').format(timestamp) : null;
   }
 
   /// Returns the y value when the state is [OneMonth]
-  String _sixMonthYTitle(double value) {
+  String _sixMonthYTitle(ChartState state, double value) {
     DateTime timestamp = _controller.todayDate.subtract(
       Duration(
-        days: (_sixMonthsDays - value - 1).floor(),
+        days: (sixMonthsDays - value - 1).floor(),
       ),
     );
-    return (timestamp.day == 15 || timestamp.day == 1)
+    return sixMonthsVerticalLine(state, value)
         ? DateFormat('MMM').format(timestamp)
         : null;
   }
 
   /// Returns the y value when the state is [OneMonth]
-  String _oneYearYTitle(double value) {
+  String _oneYearYTitle(ChartState state, double value) {
     DateTime timestamp = _controller.todayDate.subtract(
       Duration(
-        days: (_oneYearDays - value - 1).floor(),
+        days: (oneYearDays - value - 1).floor(),
       ),
     );
-    return (timestamp.day == 15 && (timestamp.month % 4) == 0)
-        ? DateFormat('MMM').format(timestamp)
-        : null;
+    return oneYearVerticalLine(state, value)
+          ? DateFormat('MMM').format(timestamp)
+          : null;
   }
 }

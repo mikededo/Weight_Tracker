@@ -72,6 +72,7 @@ class ProgressionScreen extends StatelessWidget {
     return Scaffold(
       body: DefaultPageLayout(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             ScreenHeader(
               text: 'Progress',
@@ -98,7 +99,12 @@ class ProgressionScreen extends StatelessWidget {
                 },
               ),
             ),
+            Text(
+              'Progress Chart',
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
             Tile(
+              margin: const EdgeInsets.only(top: 12.0),
               child: WeightLineChart(),
             )
           ],
