@@ -14,6 +14,6 @@ class Validators {
 
   /// Returns true if the given value it is a valid email
   bool validateEmail(String email) {
-    return emailRegExp.hasMatch(email) && email == null;
+    return emailRegExp.hasMatch(email) && email != null;
   }
 }

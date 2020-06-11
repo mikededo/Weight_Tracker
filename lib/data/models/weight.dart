@@ -43,6 +43,8 @@ class WeightData {
     return res;
   }
 
+  List<dynamic> toCsv() => [this.weight, this.date.toIso8601String()];
+
   @override
   int get hashCode => id.hashCode ^ weight.hashCode ^ date.hashCode;
 

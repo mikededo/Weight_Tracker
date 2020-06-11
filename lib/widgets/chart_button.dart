@@ -19,29 +19,31 @@ class ChartButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: BlocBuilder<ChartButtonBloc, int>(builder: (_, selectedId) {
-        return AnimatedContainer(
-          duration: Duration(milliseconds: 50),
-          curve: Curves.easeInOut,
-          margin: const EdgeInsets.only(left: 12.0),
-          decoration: BoxDecoration(
-            color: selectedId == id ? activeColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(6.0),
-            border: Border.all(
-              width: 1.0,
-              color: activeColor,
+      child: BlocBuilder<ChartButtonBloc, int>(
+        builder: (_, selectedId) {
+          return AnimatedContainer(
+            duration: Duration(milliseconds: 50),
+            curve: Curves.easeInOut,
+            margin: const EdgeInsets.only(left: 12.0),
+            decoration: BoxDecoration(
+              color: selectedId == id ? activeColor : Colors.transparent,
+              borderRadius: BorderRadius.circular(6.0),
+              border: Border.all(
+                width: 1.0,
+                color: activeColor,
+              ),
             ),
-          ),
-          padding: const EdgeInsets.symmetric(
-            vertical: 2.0,
-            horizontal: 12.0,
-          ),
-          child: Text(
-            text,
-            style: Theme.of(context).textTheme.bodyText1,
-          ),
-        );
-      }),
+            padding: const EdgeInsets.symmetric(
+              vertical: 2.0,
+              horizontal: 12.0,
+            ),
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+          );
+        },
+      ),
     );
   }
 }
