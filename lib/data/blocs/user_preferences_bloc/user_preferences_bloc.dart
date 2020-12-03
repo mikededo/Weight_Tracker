@@ -10,8 +10,7 @@ import '../../../util/pair.dart';
 part 'user_preferences_event.dart';
 
 class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
-  @override
-  UserData get initialState => UserData.emptyData();
+  UserPreferencesBloc() : super(UserData.emptyData());
 
   @override
   Stream<UserData> mapEventToState(
@@ -25,7 +24,7 @@ class UserPreferencesBloc extends Bloc<UserPreferencesEvent, UserData> {
       yield* _mapUpdatePreferenceToState(event);
     } else if (event is UserPreferencesAddUnit) {
       yield* _mapAddUnitToState(event);
-    } 
+    }
   }
 
   Stream<UserData> _mapLoadPreferencesToState() async* {

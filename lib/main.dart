@@ -7,10 +7,8 @@ import 'data/repositories/sql_weight_repository.dart';
 import 'screens/splash_screen.dart';
 import 'ui/theme_data.dart';
 import 'routes.dart';
-import 'data/blocs/bloc_delegate.dart';
 
 void main() {
-  BlocSupervisor.delegate = WeightBlocDelegate();
   runApp(WeightTracker());
 }
 

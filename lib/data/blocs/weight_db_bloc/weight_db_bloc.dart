@@ -13,10 +13,7 @@ class WeightDBBloc extends Bloc<WeightDBEvent, WeightDBState> {
   final SqlWeightRepository _repository;
   StreamSubscription _subscription;
 
-  WeightDBBloc(this._repository);
-
-  @override
-  WeightDBState get initialState => WeightDBInitial();
+  WeightDBBloc(this._repository) : super(WeightDBInitial());
 
   WeightData get lastWeight {
     if (state is WeightDBLoadSuccess) {

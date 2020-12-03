@@ -16,6 +16,10 @@ class ChartManager {
   final ChartDataController _controller;
 
   ChartManager(this._controller);
+  @override
+  String toString() {
+    return _controller.lastSevenDaysData.toString();
+  }
 
   //! DATE CONSTANTS
   static const weekDays = 7;
@@ -179,7 +183,6 @@ class ChartManager {
 
   /// Returns the y axis values to display coming from the graph itself
   String getYAxisTitles(ChartState state, double value) {
-
     switch (state) {
       case ChartState.OneWeek:
         return _oneWeekYTitle(value);
@@ -217,7 +220,9 @@ class ChartManager {
         days: (monthDays - value - 1).floor(),
       ),
     );
-    return oneMonthVerticalLine(state, value) ? DateFormat('d/M').format(timestamp) : null;
+    return oneMonthVerticalLine(state, value)
+        ? DateFormat('d/M').format(timestamp)
+        : null;
   }
 
   /// Returns the y value when the state is [OneMonth]
@@ -240,7 +245,7 @@ class ChartManager {
       ),
     );
     return oneYearVerticalLine(state, value)
-          ? DateFormat('MMM').format(timestamp)
-          : null;
+        ? DateFormat('MMM').format(timestamp)
+        : null;
   }
 }

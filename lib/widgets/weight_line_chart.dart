@@ -94,7 +94,7 @@ class _WeightLineChartState extends State<WeightLineChart> {
   LineChartData _buildChartData(ChartManager manager) {
     // Check if it is in imperial
     bool metric = BlocProvider.of<UserPreferencesBloc>(context).state.areMetric;
-
+    
     // Temp variables
     double minValue;
     double maxValue;
@@ -182,17 +182,19 @@ class _WeightLineChartState extends State<WeightLineChart> {
     // Check if it is in imperial
     bool metric = BlocProvider.of<UserPreferencesBloc>(context).state.areMetric;
 
-    List<FlSpot> _list = manager.stateData(_currentState).map((pair) {
-      return FlSpot(
-        pair.first,
-        metric
-            ? pair.second
-            : UnitConverter.doubleToFixedDecimals(
-                UnitConverter.kgToLbs(pair.second),
-                1,
-              ),
-      );
-    }).toList();
+    List<FlSpot> _list = manager.stateData(_currentState).map(
+      (pair) {
+        return FlSpot(
+          pair.first,
+          metric
+              ? pair.second
+              : UnitConverter.doubleToFixedDecimals(
+                  UnitConverter.kgToLbs(pair.second),
+                  1,
+                ),
+        );
+      },
+    ).toList();
 
     final List<Color> gradientColors = [
       const Color(0xFFFDC830),

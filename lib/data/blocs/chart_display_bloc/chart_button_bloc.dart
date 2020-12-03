@@ -8,10 +8,7 @@ part 'chart_button_event.dart';
 class ChartButtonBloc extends Bloc<ChartButtonEvent, int> {
   final List<int> buttonIds;
 
-  ChartButtonBloc(this.buttonIds);
-
-  @override
-  int get initialState => 0;
+  ChartButtonBloc(this.buttonIds) : super(0);
 
   @override
   Stream<int> mapEventToState(ChartButtonEvent event) async* {

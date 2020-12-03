@@ -6,10 +6,9 @@ import 'slider_event.dart';
 class SliderBloc extends Bloc<SliderEvent, double> {
   final double initialValue;
 
-  SliderBloc(double initialValue) : this.initialValue = initialValue ?? 180.0;
-
-  @override
-  double get initialState => initialValue;
+  SliderBloc(double initialValue)
+      : this.initialValue = initialValue ?? 180.0,
+        super(initialValue);
 
   @override
   Stream<double> mapEventToState(SliderEvent event) async* {

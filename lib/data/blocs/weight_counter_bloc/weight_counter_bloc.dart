@@ -7,10 +7,8 @@ class WeightCounterBloc extends Bloc<WeightCounterEvent, double> {
   final double initialWeight;
 
   WeightCounterBloc(double initialWeight)
-      : this.initialWeight = initialWeight ?? 75.0;
-
-  @override
-  double get initialState => initialWeight;
+      : this.initialWeight = initialWeight ?? 75.0,
+        super(initialWeight);
 
   @override
   Stream<double> mapEventToState(WeightCounterEvent event) async* {

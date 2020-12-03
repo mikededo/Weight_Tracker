@@ -75,8 +75,8 @@ class WeightValueTile extends StatelessWidget {
   }
 
   void _displayErrorOnDecrement(BuildContext context) {
-    Scaffold.of(context)
-      ..hideCurrentSnackBar()
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
           content: Text('Weight cannot be less than 0!'),

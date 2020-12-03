@@ -13,10 +13,12 @@ final Map<AppTheme, ThemeData> appThemeData = {
     primaryColorLight: Color(0xFF202137),
     buttonColor: Colors.orange,
     accentColor: Colors.orange,
-    cursorColor: Colors.orange,
     toggleableActiveColor: Colors.orange,
-    textSelectionColor: Colors.orange[200],
-    textSelectionHandleColor: Colors.orange,
+    textSelectionTheme: TextSelectionThemeData(
+      selectionColor: Colors.orange[200],
+      selectionHandleColor: Colors.orange,
+      cursorColor: Colors.orange,
+    ),
     buttonTheme: ButtonThemeData(
       splashColor: Colors.white24,
     ),

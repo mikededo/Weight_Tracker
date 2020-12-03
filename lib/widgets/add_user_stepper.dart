@@ -54,7 +54,6 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
     String hint,
     TextInputType keyboardType,
     FocusNode focusNode,
-    FocusNode nextFocusNode,
     Function(String) onSaved,
     String Function(String) validator,
   }) {
@@ -223,8 +222,7 @@ class AddUserStepperState extends State<AddUserStepper> with Validators {
 
   void _submitData() async {
     if (!_formKey.currentState.validate()) {
-      Scaffold.of(context)
-        ..removeCurrentSnackBar()
+      ScaffoldMessenger.of(context)..removeCurrentSnackBar()
         ..showSnackBar(
           SnackBar(
             content: Text('Some fields are not correct, revise them!'),

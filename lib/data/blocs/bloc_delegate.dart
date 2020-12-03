@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 
-class WeightBlocDelegate extends BlocDelegate {
+class WeightBlocDelegate extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object event) {
     super.onEvent(bloc, event);
@@ -8,7 +8,7 @@ class WeightBlocDelegate extends BlocDelegate {
   }
 
   @override
-  void onError(Bloc bloc, Object error, StackTrace stacktrace) {
+  void onError(Cubit bloc, Object error, StackTrace stacktrace) {
     super.onError(bloc, error, stacktrace);
     print(error);
   }
